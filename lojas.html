@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lojas Parceiras - Enxoval PMDF</title>
+  
+  <!-- PapaParse para ler a planilha -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --border: #22304e;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #10b981;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 60px; min-height: 100vh; }
+
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .btn-voltar {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: 0.2s;
+    }
+    .btn-voltar:hover { color: var(--text); }
+
+    h1 { font-size: 1.15rem; font-weight: 700; color: #fff; }
+
+    main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+
+    .header-section {
+      margin-bottom: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .header-section h2 { font-size: 1.5rem; font-weight: 700; color: #fff; }
+    .header-section p { font-size: 0.9rem; color: var(--text-muted); }
+
+    .toolbar {
+      margin-bottom: 1.5rem;
+      background: var(--card-bg);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .toolbar input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.65rem 1rem;
+      border-radius: 6px;
+      outline: none;
+      font-size: 0.9rem;
+      width: 100%;
+    }
+    .toolbar input:focus { border-color: var(--primary); }
+
+    .grid-lojas {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card-loja {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card-loja:hover {
+      transform: translateY(-2px);
+      border-color: #3b82f6;
+    }
+
+    .loja-nome {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .loja-dados {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex-grow: 1;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.2s;
+      width: 100%;
+    }
+
+    .btn-whats {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    .btn-whats:hover {
+      background: #10b981;
+      color: #fff;
+    }
+
+    .btn-site {
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      color: #60a5fa;
+    }
+    .btn-site:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .dado-vazio {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-style: italic;
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="cfp.html" class="btn-voltar">← Voltar para o Enxoval</a>
+    <h1>LISTA DE LOJAS</h1>
+    <span style="width: 50px;"></span>
+  </header>
+
+  <main>
+    <div class="header-section">
+      <h2>Lojas</h2>
+      <p>Consulte diretamente as lojas para confirmar os preços dos itens do enxoval.</p>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="buscaLoja" placeholder="Buscar por nome da loja..." oninput="filtrarLojas()">
+    </div>
+
+    <div class="grid-lojas" id="gridLojas">
+      <p style="color: var(--text-muted); grid-column: 1/-1;">Carregando lista de lojas...</p>
+    </div>
+  </main>
+
+  <script>
+    // Bloqueio de Inspeção
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12' || e.keyCode === 123) { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].includes(e.key)) { e.preventDefault(); return false; }
+      if (e.ctrlKey && ['u','U','s','S'].includes(e.key)) { e.preventDefault(); return false; }
+    });
+
+    // Se as lojas ficarem em uma aba separada, insira aqui o link correspondente
+    const URL_LOJAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pubhtml?gid=2146931872&single=true';
+
+    let listaLojas = [];
+
+    async function init() {
+      try {
+        const response = await fetch(URL_LOJAS, { redirect: 'follow' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const text = await response.text();
+
+        Papa.parse(text, {
+          header: true,
+          skipEmptyLines: 'greedy',
+          transformHeader: h => h.trim(),
+          complete: results => {
+            processarDados(results.data);
+          },
+          error: err => {
+            document.getElementById('gridLojas').innerHTML = `<p style="color: var(--text-muted);">Erro ao processar dados.</p>`;
+          }
+        });
+      } catch (e) {
+        document.getElementById('gridLojas').innerHTML = `<p style="color: var(--text-muted);">Erro ao carregar lojas.</p>`;
+      }
+    }
+
+    function getProp(obj, chavesPossiveis) {
+      if (!obj) return '';
+      const limpar = str => String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+      const chavesReais = Object.keys(obj);
+
+      for (const procurada of chavesPossiveis) {
+        const limpaProcurada = limpar(procurada);
+        const achada = chavesReais.find(k => limpar(k) === limpaProcurada);
+        if (achada && obj[achada] !== undefined && obj[achada] !== null) {
+          return String(obj[achada]).trim();
+        }
+      }
+      return '';
+    }
+
+    function processarDados(linhas) {
+      const mapa = new Map();
+
+      linhas.forEach(linha => {
+        const nome = getProp(linha, ['Loja', 'Nome_Loja', 'Nome']);
+        const tel = getProp(linha, ['Telefone', 'WhatsApp', 'Contato', 'Tel']);
+        const site = getProp(linha, ['Site', 'Link', 'URL']);
+
+        if (nome && !mapa.has(nome.toLowerCase())) {
+          mapa.set(nome.toLowerCase(), { nome, tel, site });
+        } else if (nome && mapa.has(nome.toLowerCase())) {
+          // Preenche dados caso estejam presentes em outra linha
+          const atual = mapa.get(nome.toLowerCase());
+          if (!atual.tel && tel) atual.tel = tel;
+          if (!atual.site && site) atual.site = site;
+        }
+      });
+
+      listaLojas = Array.from(mapa.values()).sort((a, b) => a.nome.localeCompare(b.nome));
+      renderizar(listaLojas);
+    }
+
+    function formatarWhatsLink(tel) {
+      const nums = tel.replace(/\D/g, '');
+      if (!nums) return '';
+      // Se não tiver DDI (55), adiciona
+      const ddi = nums.length <= 11 ? '55' + nums : nums;
+      return `https://wa.me/${ddi}`;
+    }
+
+    function formatarSiteLink(site) {
+      if (!site) return '';
+      if (!site.startsWith('http://') && !site.startsWith('https://')) {
+        return 'https://' + site;
+      }
+      return site;
+    }
+
+    function renderizar(lojas) {
+      const container = document.getElementById('gridLojas');
+      if (!lojas.length) {
+        container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhuma loja encontrada com esse nome.</p>';
+        return;
+      }
+
+      container.innerHTML = lojas.map(loja => {
+        const whatsUrl = formatarWhatsLink(loja.tel);
+        const siteUrl = formatarSiteLink(loja.site);
+
+        return `
+          <div class="card-loja">
+            <div class="loja-nome">
+              <span>🏬</span> ${loja.nome}
+            </div>
+            
+            <div class="loja-dados">
+              ${loja.tel ? `
+                <a href="${whatsUrl}" target="_blank" rel="noopener noreferrer" class="btn-action btn-whats">
+                  <span>💬</span> WhatsApp: ${loja.tel}
+                </a>
+              ` : '<div class="dado-vazio">Telefone não informado</div>'}
+
+              ${loja.site ? `
+                <a href="${siteUrl}" target="_blank" rel="noopener noreferrer" class="btn-action btn-site">
+                  <span>🌐</span> Acessar Loja Online ↗
+                </a>
+              ` : '<div class="dado-vazio">Site não informado</div>'}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filtrarLojas() {
+      const busca = document.getElementById('buscaLoja').value.toLowerCase();
+      const filtradas = listaLojas.filter(l => l.nome.toLowerCase().includes(busca));
+      renderizar(filtradas);
+    }
+
+    init();
+  </script>
+</body>
+</html>
