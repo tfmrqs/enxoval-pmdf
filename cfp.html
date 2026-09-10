@@ -54,6 +54,28 @@
 
     h1 { font-size: 1.15rem; font-weight: 700; color: #fff; }
 
+    .btn-nav-lojas {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-nav-lojas:hover {
+      background: #28374f;
+      border-color: #475569;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+    
     .btn-toggle-cart {
       background: var(--primary);
       color: #fff;
@@ -425,15 +447,15 @@
 </head>
 <body>
 
-   <header>
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <a href="index.html" class="btn-voltar">← Voltar</a>
-      <a href="lojas.html" class="btn-nav-lojas">🏪 Contato das Lojas</a>
-    </div>
+  <header>
+    <a href="index.html" class="btn-voltar"></a>
     <h1>CFP - Curso de Formação de Praças</h1>
-    <button class="btn-toggle-cart" onclick="toggleSidebar(true)">
-      📋 Resumo (<span id="cartCountBadge">0</span>)
-    </button>
+    <div style="display: flex; align-items: center; gap: 0.6rem;">
+      <a href="loja.html" class="btn-nav-lojas">🏪 Lojas</a>
+      <button class="btn-toggle-cart" onclick="toggleSidebar(true)">
+        📋 Resumo (<span id="cartCountBadge">0</span>)
+      </button>
+    </div>
   </header>
 
   <main>
