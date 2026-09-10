@@ -512,7 +512,7 @@
         const id = getProp(item, ['ID_Item', 'ID', 'Codigo']);
         const nome = getProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']) || 'Item sem nome';
         const fase = getProp(item, ['Fase', 'Etapa']);
-        const obrigatoriedade = getProp(item, ['Obrigatoriedade', 'Obrigatorio']) || 'Obrigatório';
+        //const obrigatoriedade = getProp(item, ['Obrigatoriedade', 'Obrigatorio']) || 'Obrigatório';
         const especificacao = getProp(item, ['Especificacao', 'Especificação', 'Detalhes']);
         const img = getProp(item, ['URL_Imagem', 'Imagem', 'Foto']);
         const qtdPadrao = parseInt(getProp(item, ['Qtd_Padrao', 'Qtd', 'Quantidade'])) || 1;
