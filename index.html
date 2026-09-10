@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Enxovais - PMDF</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --border: #22304e;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #10b981;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 110px;
+    }
+
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .nav-courses {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .course-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: 0.2s;
+    }
+
+    .course-btn:hover {
+      border-color: var(--primary);
+      color: var(--text);
+    }
+
+    .course-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      background: var(--card-bg);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .toolbar-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .toolbar select, .toolbar input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    .toolbar input {
+      min-width: 250px;
+    }
+
+    .grid-itens {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #0b0f19;
+    }
+
+    .card-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      flex-grow: 1;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .tag-obrigatorio {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+
+    .tag-fase {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+    }
+
+    .item-title {
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .item-spec {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .offer-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .offer-box select, .offer-box input {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      width: 100%;
+      outline: none;
+    }
+
+    .controls-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .subtotal {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #070a12;
+      border-top: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .total-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .status-box {
+      grid-column: 1 / -1;
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Enxovais Operacionais PMDF</h1>
+    <nav class="nav-courses" id="courseNav"></nav>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Fase:</label>
+        <select id="filterFase" onchange="aplicarFiltros()"></select>
+      </div>
+      <input type="text" id="searchItem" placeholder="Buscar equipamento..." oninput="aplicarFiltros()">
+    </div>
+
+    <div class="grid-itens" id="gridItens"></div>
+  </main>
+
+  <footer>
+    <div id="statsContador" style="font-size: 0.85rem; color: var(--text-muted);">Iniciando leitura...</div>
+    <div>Total Estimado: <span class="total-val" id="totalGeral">R$ 0,00</span></div>
+  </footer>
+
+  <script>
+    const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?single=true&output=csv';
+
+    // Mapeamento dos cursos e seus GIDs
+    const CSV_URLS = {
+      'CFP': `${SHEET_BASE}&gid=0`,
+      'CFO': `${SHEET_BASE}&gid=SEU_GID_CFO`,
+      'ROTAM': `${SHEET_BASE}&gid=SEU_GID_ROTAM`,
+      'PATAMO': `${SHEET_BASE}&gid=SEU_GID_PATAMO`,
+      'BOPE': `${SHEET_BASE}&gid=SEU_GID_BOPE`
+    };
+
+    // Cole a URL completa ou gid da aba 'Preco' quando publicar
+    const URL_PRECO = ''; 
+
+    let cursoAtivo = 'CFP';
+    let rawItens = [];
+    let rawPrecos = [];
+    let selecoesUsuario = {};
+
+    async function init() {
+      montarNavegacaoCursos();
+      await carregarPrecos();
+      await carregarCurso(cursoAtivo);
+    }
+
+    function montarNavegacaoCursos() {
+      const nav = document.getElementById('courseNav');
+      nav.innerHTML = Object.keys(CSV_URLS).map(c => `
+        <button class="course-btn ${c === cursoAtivo ? 'active' : ''}" onclick="mudarCurso('${c}')">${c}</button>
+      `).join('');
+    }
+
+    async function mudarCurso(curso) {
+      cursoAtivo = curso;
+      montarNavegacaoCursos();
+      await carregarCurso(curso);
+    }
+
+    async function parseCSV(url) {
+      if (!url || url.includes('SEU_GID')) {
+        throw new Error('Aba não configurada na planilha.');
+      }
+
+      const response = await fetch(url, { redirect: 'follow' });
+      if (!response.ok) {
+        throw new Error(`Erro na conexão (${response.status}): Verifique a publicação do arquivo.`);
+      }
+
+      const text = await response.text();
+
+      return new Promise((resolve, reject) => {
+        Papa.parse(text, {
+          header: true,
+          skipEmptyLines: true,
+          complete: results => resolve(results.data),
+          error: err => reject(err)
+        });
+      });
+    }
+
+    async function carregarPrecos() {
+      if (!URL_PRECO) return;
+      try {
+        rawPrecos = await parseCSV(URL_PRECO);
+      } catch (e) {
+        console.warn('Aba de preços indisponível:', e);
+      }
+    }
+
+    async function carregarCurso(curso) {
+      document.getElementById('statsContador').innerText = `Carregando enxoval do ${curso}...`;
+      try {
+        const url = CSV_URLS[curso];
+        rawItens = await parseCSV(url);
+        povoarFiltroFases();
+        aplicarFiltros();
+      } catch (e) {
+        console.error("Falha ao carregar dados:", e);
+        document.getElementById('gridItens').innerHTML = `
+          <div class="status-box">
+            <p style="color: #f87171; font-weight: bold; margin-bottom: 0.5rem;">Falha ao carregar o curso ${curso}:</p>
+            <p style="font-size: 0.85rem;">${e.message}</p>
+          </div>
+        `;
+        document.getElementById('statsContador').innerText = 'Falha no carregamento';
+      }
+    }
+
+    function getValorProp(obj, chaves) {
+      for (const k of chaves) {
+        if (obj[k] !== undefined && obj[k] !== null && String(obj[k]).trim() !== '') {
+          return String(obj[k]).trim();
+        }
+      }
+      return '';
+    }
+
+    function povoarFiltroFases() {
+      const fases = [...new Set(rawItens.map(i => getValorProp(i, ['Fase', 'fase'])).filter(Boolean))];
+      const select = document.getElementById('filterFase');
+      select.innerHTML = '<option value="">Todas as Fases</option>' + 
+        fases.map(f => `<option value="${f}">${f}</option>`).join('');
+    }
+
+    function aplicarFiltros() {
+      const fase = document.getElementById('filterFase').value;
+      const busca = document.getElementById('searchItem').value.toLowerCase();
+
+      const filtrados = rawItens.filter(item => {
+        const itemNome = getValorProp(item, ['Item', 'Nome_Item', 'item']).toLowerCase();
+        const itemFase = getValorProp(item, ['Fase', 'fase']);
+
+        const matchFase = !fase || itemFase === fase;
+        const matchBusca = !busca || itemNome.includes(busca);
+        return matchFase && matchBusca;
+      });
+
+      renderCards(filtrados);
+      calcularTotal();
+    }
+
+    function renderCards(itens) {
+      const container = document.getElementById('gridItens');
+      if (!itens.length) {
+        container.innerHTML = '<div class="status-box">Nenhum item cadastrado ou encontrado.</div>';
+        return;
+      }
+
+      container.innerHTML = itens.map(item => {
+        const id = getValorProp(item, ['ID_Item', 'ID', 'id']) || Math.random().toString();
+        const nome = getValorProp(item, ['Item', 'Nome_Item', 'item']) || 'Equipamento sem identificação';
+        const fase = getValorProp(item, ['Fase', 'fase']);
+        const obrigatoriedade = getValorProp(item, ['Obrigatoriedade', 'obrigatoriedade']) || 'Obrigatório';
+        const especificacao = getValorProp(item, ['Especificacao', 'Especificação', 'especificacao']);
+        const img = getValorProp(item, ['URL_Imagem', 'Imagem', 'imagem']);
+        const qtdPadrao = parseInt(getValorProp(item, ['Qtd_Padrao', 'Qtd', 'quantidade'])) || 1;
+
+        const ofertas = rawPrecos.filter(p => getValorProp(p, ['ID_Item', 'ID']) === id);
+        
+        if (!selecoesUsuario[id]) {
+          const defaultOferta = ofertas[0] || null;
+          selecoesUsuario[id] = {
+            loja: defaultOferta ? defaultOferta.Nome_Loja : '',
+            qtd: qtdPadrao,
+            preco: defaultOferta ? parseFloat(String(defaultOferta.Preco).replace(',', '.')) || 0 : 0,
+            link: defaultOferta ? defaultOferta.Link : '#'
+          };
+        }
+
+        const sel = selecoesUsuario[id];
+        const subtotal = (sel.preco * sel.qtd) || 0;
+
+        return `
+          <div class="card">
+            <img src="${img || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'}" alt="${nome}" onerror="this.src='https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'">
+            <div class="card-body">
+              <div class="card-tags">
+                <span class="tag tag-obrigatorio">${obrigatoriedade}</span>
+                ${fase ? `<span class="tag tag-fase">${fase}</span>` : ''}
+              </div>
+              <div class="item-title">${nome}</div>
+              ${especificacao ? `<p class="item-spec">${especificacao}</p>` : ''}
+
+              <div class="offer-box">
+                <label style="font-size: 0.75rem; color: var(--text-muted);">Fornecedor / Oferta:</label>
+                <select onchange="atualizarLoja('${id}', this.value)">
+                  ${ofertas.length ? ofertas.map(o => `
+                    <option value="${o.Nome_Loja}" ${o.Nome_Loja === sel.loja ? 'selected' : ''}>
+                      ${o.Nome_Loja} ${o.Marca_Vendida ? `(${o.Marca_Vendida})` : ''} - R$ ${o.Preco}
+                    </option>
+                  `).join('') : '<option value="">Sem ofertas cadastradas</option>'}
+                </select>
+
+                <div class="controls-row">
+                  <div style="flex-grow: 1;">
+                    <label style="font-size: 0.7rem; color: var(--text-muted);">Qtd</label>
+                    <input type="number" min="0" value="${sel.qtd}" onchange="atualizarQtd('${id}', this.value)">
+                  </div>
+                  ${sel.link && sel.link !== '#' ? `<a href="${sel.link}" target="_blank" style="margin-top: 1rem; font-size: 0.8rem; color: var(--primary);">Ver Loja ↗</a>` : ''}
+                </div>
+
+                <div class="card-footer">
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Subtotal:</span>
+                  <span class="subtotal">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function atualizarLoja(id, nomeLoja) {
+      const oferta = rawPrecos.find(p => getValorProp(p, ['ID_Item', 'ID']) === id && p.Nome_Loja === nomeLoja);
+      if (oferta) {
+        selecoesUsuario[id].loja = oferta.Nome_Loja;
+        selecoesUsuario[id].preco = parseFloat(String(oferta.Preco).replace(',', '.')) || 0;
+        selecoesUsuario[id].link = oferta.Link || '#';
+      }
+      aplicarFiltros();
+    }
+
+    function atualizarQtd(id, qtd) {
+      if (selecoesUsuario[id]) {
+        selecoesUsuario[id].qtd = parseInt(qtd) || 0;
+      }
+      aplicarFiltros();
+    }
+
+    function calcularTotal() {
+      let total = 0;
+      let qtdItens = 0;
+
+      rawItens.forEach(item => {
+        const id = getValorProp(item, ['ID_Item', 'ID', 'id']);
+        const sel = selecoesUsuario[id];
+        if (sel) {
+          total += sel.preco * sel.qtd;
+          if (sel.qtd > 0) qtdItens++;
+        }
+      });
+
+      document.getElementById('totalGeral').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+      document.getElementById('statsContador').innerText = `${qtdItens} itens selecionados no orçamento`;
+    }
+
+    init();
+  </script>
+</body>
+</html>
