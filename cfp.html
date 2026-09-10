@@ -655,7 +655,6 @@
             qtd: qtdPadrao,
             preco: 0,
             link: '',
-            cupom: '',
             nome: nome,
             img: img || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto',
             lojaLabel: ''
@@ -665,6 +664,10 @@
         const sel = selecoesUsuario[cardKey];
         const subtotal = (sel.preco * sel.qtd) || 0;
         const itemSelecionado = sel.ofertaIndex !== '' && sel.preco > 0;
+
+        // Pega a oferta atual e lê direto a coluna CUPOM da planilha
+        const ofertaAtual = ofertas[parseInt(sel.ofertaIndex, 10)];
+        const cupomTexto = (ofertaAtual && ofertaAtual['CUPOM']) ? String(ofertaAtual['CUPOM']).trim() : '';
 
         return `
           <div class="card">
@@ -702,13 +705,11 @@
                   </div>
                 </div>
 
-               ${(sel.link || (sel.cupom && sel.cupom.trim() !== '')) ? `
-                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem;">
-                    ${sel.link ? `<a href="${sel.link}" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>` : '<div></div>'}
-                    ${(sel.cupom && sel.cupom.trim() !== '' && sel.cupom.trim() !== '-') ? `<span class="cupom-badge">🏷️ CUPOM: ${sel.cupom.trim()}</span>` : ''}
-                  </div>
-                ` : ''}
-                
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem;">
+                  ${sel.link ? `<a href="${sel.link}" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>` : '<div></div>'}
+                  ${cupomTexto !== '' && cupomTexto !== '-' ? `<span class="cupom-badge">🏷️ CUPOM: ${cupomTexto}</span>` : ''}
+                </div>
+
                 <div class="card-footer">
                   <span style="font-size: 0.8rem; color: var(--text-muted);">Subtotal:</span>
                   ${itemSelecionado 
