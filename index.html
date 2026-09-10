@@ -18,18 +18,8 @@
       --danger: #ef4444;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      padding-bottom: 110px;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 110px; }
 
     header {
       background: var(--card-bg);
@@ -45,18 +35,9 @@
       z-index: 10;
     }
 
-    h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #fff;
-    }
+    h1 { font-size: 1.25rem; font-weight: 700; color: #fff; }
 
-    .nav-courses {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
+    .nav-courses { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .course-btn {
       background: transparent;
       border: 1px solid var(--border);
@@ -66,24 +47,21 @@
       cursor: pointer;
       font-weight: 600;
       font-size: 0.85rem;
-      transition: 0.2s;
     }
+    .course-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
 
-    .course-btn:hover {
-      border-color: var(--primary);
-      color: var(--text);
-    }
+    main { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; }
 
-    .course-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #fff;
-    }
-
-    main {
-      max-width: 1200px;
-      margin: 1.5rem auto;
-      padding: 0 1rem;
+    /* Painel de diagnóstico */
+    #debugBox {
+      background: #1e293b;
+      border: 1px dashed #475569;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin-bottom: 1rem;
     }
 
     .toolbar {
@@ -98,12 +76,6 @@
       border: 1px solid var(--border);
     }
 
-    .toolbar-group {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
     .toolbar select, .toolbar input {
       background: var(--bg);
       border: 1px solid var(--border);
@@ -112,10 +84,6 @@
       border-radius: 6px;
       outline: none;
       font-size: 0.9rem;
-    }
-
-    .toolbar input {
-      min-width: 250px;
     }
 
     .grid-itens {
@@ -140,20 +108,9 @@
       background: #0b0f19;
     }
 
-    .card-body {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      flex-grow: 1;
-    }
+    .card-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; flex-grow: 1; }
 
-    .card-tags {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-
+    .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
     .tag {
       font-size: 0.7rem;
       padding: 0.2rem 0.5rem;
@@ -161,28 +118,11 @@
       font-weight: 600;
       text-transform: uppercase;
     }
+    .tag-obrigatorio { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .tag-fase { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
 
-    .tag-obrigatorio {
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-    }
-
-    .tag-fase {
-      background: rgba(59, 130, 246, 0.2);
-      color: #60a5fa;
-    }
-
-    .item-title {
-      font-size: 1rem;
-      font-weight: 600;
-      line-height: 1.3;
-    }
-
-    .item-spec {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
+    .item-title { font-size: 1rem; font-weight: 600; line-height: 1.3; }
+    .item-spec { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
 
     .offer-box {
       background: var(--bg);
@@ -206,11 +146,7 @@
       outline: none;
     }
 
-    .controls-row {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
+    .controls-row { display: flex; gap: 0.5rem; align-items: center; }
 
     .btn-link {
       display: inline-block;
@@ -221,10 +157,6 @@
       font-weight: 600;
     }
 
-    .btn-link:hover {
-      text-decoration: underline;
-    }
-
     .card-footer {
       display: flex;
       justify-content: space-between;
@@ -233,11 +165,7 @@
       border-top: 1px solid var(--border);
     }
 
-    .subtotal {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
+    .subtotal { font-size: 0.95rem; font-weight: 700; color: var(--accent); }
 
     footer {
       position: fixed;
@@ -253,21 +181,7 @@
       z-index: 20;
     }
 
-    .total-val {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: var(--accent);
-    }
-
-    .status-box {
-      grid-column: 1 / -1;
-      background: var(--card-bg);
-      padding: 2rem;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      text-align: center;
-      color: var(--text-muted);
-    }
+    .total-val { font-size: 1.35rem; font-weight: 800; color: var(--accent); }
   </style>
 </head>
 <body>
@@ -278,8 +192,10 @@
   </header>
 
   <main>
+    <div id="debugBox">Verificando status de sincronização...</div>
+
     <div class="toolbar">
-      <div class="toolbar-group">
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
         <label style="font-size: 0.8rem; color: var(--text-muted);">Fase:</label>
         <select id="filterFase" onchange="aplicarFiltros()"></select>
       </div>
@@ -290,24 +206,15 @@
   </main>
 
   <footer>
-    <div id="statsContador" style="font-size: 0.85rem; color: var(--text-muted);">Carregando dados...</div>
+    <div id="statsContador" style="font-size: 0.85rem; color: var(--text-muted);">Aguardando...</div>
     <div>Total Estimado: <span class="total-val" id="totalGeral">R$ 0,00</span></div>
   </footer>
 
   <script>
-    const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?single=true&output=csv';
-
-    // Mapeamento dos cursos e seus GIDs
-    const CSV_URLS = {
-      'CFP': `${SHEET_BASE}&gid=0`,
-      // 'CFO': `${SHEET_BASE}&gid=SEU_GID_CFO`,
-      // 'ROTAM': `${SHEET_BASE}&gid=SEU_GID_ROTAM`,
-      // 'PATAMO': `${SHEET_BASE}&gid=SEU_GID_PATAMO`,
-      // 'BOPE': `${SHEET_BASE}&gid=SEU_GID_BOPE`
-    };
-
-    // Link oficial da aba Preco fornecido por você
+    const URL_CFP = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?gid=0&single=true&output=csv';
     const URL_PRECO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?gid=1625403665&single=true&output=csv';
+
+    const CSV_URLS = { 'CFP': URL_CFP };
 
     let cursoAtivo = 'CFP';
     let rawItens = [];
@@ -334,21 +241,15 @@
     }
 
     async function parseCSV(url) {
-      if (!url || url.includes('SEU_GID')) {
-        throw new Error('Aba não configurada.');
-      }
-
       const response = await fetch(url, { redirect: 'follow' });
-      if (!response.ok) {
-        throw new Error(`Falha HTTP ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const text = await response.text();
 
       return new Promise((resolve, reject) => {
         Papa.parse(text, {
           header: true,
-          skipEmptyLines: true,
+          skipEmptyLines: 'greedy',
+          transformHeader: h => h.trim(), // Remove espaços invisíveis do cabeçalho
           complete: results => resolve(results.data),
           error: err => reject(err)
         });
@@ -356,42 +257,37 @@
     }
 
     async function carregarPrecos() {
+      const debug = document.getElementById('debugBox');
       try {
         rawPrecos = await parseCSV(URL_PRECO);
-        console.log("Preços e Lojas carregados:", rawPrecos);
+        const colunas = rawPrecos.length > 0 ? Object.keys(rawPrecos[0]).join(', ') : 'Nenhuma';
+        debug.innerHTML = `✅ <strong>Aba Preço conectada:</strong> ${rawPrecos.length} linhas lidas. Colunas detectadas: [${colunas}]`;
       } catch (e) {
-        console.warn('Aba de preços indisponível:', e);
+        debug.innerHTML = `❌ <strong>Erro na aba Preço:</strong> ${e.message}`;
       }
     }
 
     async function carregarCurso(curso) {
       document.getElementById('statsContador').innerText = `Carregando enxoval do ${curso}...`;
       try {
-        const url = CSV_URLS[curso];
-        rawItens = await parseCSV(url);
-        console.log("Itens do curso carregados:", rawItens);
+        rawItens = await parseCSV(CSV_URLS[curso]);
         povoarFiltroFases();
         aplicarFiltros();
       } catch (e) {
-        console.error("Falha ao carregar curso:", e);
-        document.getElementById('gridItens').innerHTML = `
-          <div class="status-box">
-            <p style="color: #f87171; font-weight: bold; margin-bottom: 0.5rem;">Falha ao carregar ${curso}:</p>
-            <p style="font-size: 0.85rem;">${e.message}</p>
-          </div>
-        `;
-        document.getElementById('statsContador').innerText = 'Falha no carregamento';
+        document.getElementById('gridItens').innerHTML = `<p style="color: var(--text-muted); padding: 1rem;">Erro ao carregar itens: ${e.message}</p>`;
       }
     }
 
-    function getValorProp(obj, chaves) {
+    // Normalizador de chaves: ignora maiúsculas, espaços e símbolos
+    function getProp(obj, chavesPossiveis) {
       if (!obj) return '';
-      const normalizar = str => str.toLowerCase().replace(/[^a-z0-9]/g, '');
-      const chavesDisponiveis = Object.keys(obj);
+      const limpar = str => String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+      const chavesReais = Object.keys(obj);
 
-      for (const procurada of chaves) {
-        const achada = chavesDisponiveis.find(k => normalizar(k) === normalizar(procurada));
-        if (achada && obj[achada] !== undefined && obj[achada] !== null && String(obj[achada]).trim() !== '') {
+      for (const procurada of chavesPossiveis) {
+        const limpaProcurada = limpar(procurada);
+        const achada = chavesReais.find(k => limpar(k) === limpaProcurada);
+        if (achada && obj[achada] !== undefined && obj[achada] !== null) {
           return String(obj[achada]).trim();
         }
       }
@@ -406,7 +302,7 @@
     }
 
     function povoarFiltroFases() {
-      const fases = [...new Set(rawItens.map(i => getValorProp(i, ['Fase', 'Etapa'])).filter(Boolean))];
+      const fases = [...new Set(rawItens.map(i => getProp(i, ['Fase', 'Etapa'])).filter(Boolean))];
       const select = document.getElementById('filterFase');
       select.innerHTML = '<option value="">Todas as Fases</option>' + 
         fases.map(f => `<option value="${f}">${f}</option>`).join('');
@@ -417,8 +313,8 @@
       const busca = document.getElementById('searchItem').value.toLowerCase();
 
       const filtrados = rawItens.filter(item => {
-        const itemNome = getValorProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']).toLowerCase();
-        const itemFase = getValorProp(item, ['Fase', 'Etapa']);
+        const itemNome = getProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']).toLowerCase();
+        const itemFase = getProp(item, ['Fase', 'Etapa']);
 
         const matchFase = !fase || itemFase === fase;
         const matchBusca = !busca || itemNome.includes(busca);
@@ -432,36 +328,42 @@
     function renderCards(itens) {
       const container = document.getElementById('gridItens');
       if (!itens.length) {
-        container.innerHTML = '<div class="status-box">Nenhum item cadastrado ou encontrado.</div>';
+        container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhum item encontrado.</p>';
         return;
       }
 
       container.innerHTML = itens.map(item => {
-        const id = getValorProp(item, ['ID_Item', 'ID', 'Codigo']) || Math.random().toString();
-        const nome = getValorProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']) || 'Item sem nome';
-        const fase = getValorProp(item, ['Fase', 'Etapa']);
-        const obrigatoriedade = getValorProp(item, ['Obrigatoriedade', 'Obrigatorio', 'Tipo']) || 'Obrigatório';
-        const especificacao = getValorProp(item, ['Especificacao', 'Especificação', 'Detalhes']);
-        const img = getValorProp(item, ['URL_Imagem', 'Imagem', 'Foto']);
-        const qtdPadrao = parseInt(getValorProp(item, ['Qtd_Padrao', 'Qtd', 'Quantidade'])) || 1;
+        const id = getProp(item, ['ID_Item', 'ID', 'Codigo']);
+        const nome = getProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']) || 'Item sem nome';
+        const fase = getProp(item, ['Fase', 'Etapa']);
+        const obrigatoriedade = getProp(item, ['Obrigatoriedade', 'Obrigatorio']) || 'Obrigatório';
+        const especificacao = getProp(item, ['Especificacao', 'Especificação', 'Detalhes']);
+        const img = getProp(item, ['URL_Imagem', 'Imagem', 'Foto']);
+        const qtdPadrao = parseInt(getProp(item, ['Qtd_Padrao', 'Qtd', 'Quantidade'])) || 1;
 
-        // Filtra ofertas correspondentes ao ID_Item (desconsiderando maiúsculas/espaços)
+        // Tenta cruzar por ID_Item e fallback por Nome do Item
         const ofertas = rawPrecos.filter(p => {
-          const idPreco = getValorProp(p, ['ID_Item', 'ID', 'Codigo']);
-          return idPreco.toLowerCase() === id.toLowerCase();
+          const pId = getProp(p, ['ID_Item', 'ID', 'Codigo']);
+          const pItem = getProp(p, ['Item', 'Nome_Item', 'Nome']);
+          
+          const matchPorId = id && pId && pId.toLowerCase() === id.toLowerCase();
+          const matchPorNome = nome && pItem && pItem.toLowerCase() === nome.toLowerCase();
+          return matchPorId || matchPorNome;
         });
 
-        if (!selecoesUsuario[id]) {
+        const cardKey = id || nome;
+
+        if (!selecoesUsuario[cardKey]) {
           const defaultOferta = ofertas[0] || null;
-          selecoesUsuario[id] = {
-            loja: defaultOferta ? getValorProp(defaultOferta, ['Nome_Loja', 'Loja']) : '',
+          selecoesUsuario[cardKey] = {
+            loja: defaultOferta ? getProp(defaultOferta, ['Nome_Loja', 'Loja']) : '',
             qtd: qtdPadrao,
-            preco: defaultOferta ? converterPreco(getValorProp(defaultOferta, ['Preco', 'Valor'])) : 0,
-            link: defaultOferta ? getValorProp(defaultOferta, ['Link', 'URL']) : ''
+            preco: defaultOferta ? converterPreco(getProp(defaultOferta, ['Preco', 'Valor'])) : 0,
+            link: defaultOferta ? getProp(defaultOferta, ['Link', 'URL']) : ''
           };
         }
 
-        const sel = selecoesUsuario[id];
+        const sel = selecoesUsuario[cardKey];
         const subtotal = (sel.preco * sel.qtd) || 0;
 
         return `
@@ -476,12 +378,12 @@
               ${especificacao ? `<p class="item-spec">${especificacao}</p>` : ''}
 
               <div class="offer-box">
-                <label style="font-size: 0.75rem; color: var(--text-muted);">Fornecedor / Oferta:</label>
-                <select onchange="atualizarLoja('${id}', this.value)">
+                <label style="font-size: 0.75rem; color: var(--text-muted);">Fornecedor / Oferta (${ofertas.length}):</label>
+                <select onchange="atualizarLoja('${cardKey}', this.value)">
                   ${ofertas.length ? ofertas.map(o => {
-                    const nomeLoja = getValorProp(o, ['Nome_Loja', 'Loja']);
-                    const marca = getValorProp(o, ['Marca_Vendida', 'Marca', 'Modelo']);
-                    const preco = converterPreco(getValorProp(o, ['Preco', 'Valor']));
+                    const nomeLoja = getProp(o, ['Nome_Loja', 'Loja']);
+                    const marca = getProp(o, ['Marca_Vendida', 'Marca', 'Modelo']);
+                    const preco = converterPreco(getProp(o, ['Preco', 'Valor']));
                     const isSelected = nomeLoja === sel.loja;
                     return `
                       <option value="${nomeLoja}" ${isSelected ? 'selected' : ''}>
@@ -494,7 +396,7 @@
                 <div class="controls-row">
                   <div style="flex-grow: 1;">
                     <label style="font-size: 0.7rem; color: var(--text-muted);">Quantidade:</label>
-                    <input type="number" min="0" value="${sel.qtd}" onchange="atualizarQtd('${id}', this.value)">
+                    <input type="number" min="0" value="${sel.qtd}" onchange="atualizarQtd('${cardKey}', this.value)">
                   </div>
                 </div>
 
@@ -511,24 +413,27 @@
       }).join('');
     }
 
-    function atualizarLoja(id, nomeLoja) {
+    function atualizarLoja(cardKey, nomeLoja) {
       const oferta = rawPrecos.find(p => {
-        const matchId = getValorProp(p, ['ID_Item', 'ID', 'Codigo']).toLowerCase() === id.toLowerCase();
-        const matchLoja = getValorProp(p, ['Nome_Loja', 'Loja']) === nomeLoja;
-        return matchId && matchLoja;
+        const pId = getProp(p, ['ID_Item', 'ID', 'Codigo']);
+        const pItem = getProp(p, ['Item', 'Nome_Item', 'Nome']);
+        const matchKey = (pId && pId.toLowerCase() === cardKey.toLowerCase()) || 
+                         (pItem && pItem.toLowerCase() === cardKey.toLowerCase());
+        const matchLoja = getProp(p, ['Nome_Loja', 'Loja']) === nomeLoja;
+        return matchKey && matchLoja;
       });
 
-      if (oferta && selecoesUsuario[id]) {
-        selecoesUsuario[id].loja = getValorProp(oferta, ['Nome_Loja', 'Loja']);
-        selecoesUsuario[id].preco = converterPreco(getValorProp(oferta, ['Preco', 'Valor']));
-        selecoesUsuario[id].link = getValorProp(oferta, ['Link', 'URL']);
+      if (oferta && selecoesUsuario[cardKey]) {
+        selecoesUsuario[cardKey].loja = getProp(oferta, ['Nome_Loja', 'Loja']);
+        selecoesUsuario[cardKey].preco = converterPreco(getProp(oferta, ['Preco', 'Valor']));
+        selecoesUsuario[cardKey].link = getProp(oferta, ['Link', 'URL']);
       }
       aplicarFiltros();
     }
 
-    function atualizarQtd(id, qtd) {
-      if (selecoesUsuario[id]) {
-        selecoesUsuario[id].qtd = parseInt(qtd) || 0;
+    function atualizarQtd(cardKey, qtd) {
+      if (selecoesUsuario[cardKey]) {
+        selecoesUsuario[cardKey].qtd = parseInt(qtd) || 0;
       }
       aplicarFiltros();
     }
@@ -538,8 +443,8 @@
       let qtdItens = 0;
 
       rawItens.forEach(item => {
-        const id = getValorProp(item, ['ID_Item', 'ID', 'Codigo']);
-        const sel = selecoesUsuario[id];
+        const cardKey = getProp(item, ['ID_Item', 'ID', 'Codigo']) || getProp(item, ['Item', 'Nome_Item', 'Nome']);
+        const sel = selecoesUsuario[cardKey];
         if (sel) {
           total += sel.preco * sel.qtd;
           if (sel.qtd > 0 && sel.preco > 0) qtdItens++;
@@ -547,7 +452,7 @@
       });
 
       document.getElementById('totalGeral').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
-      document.getElementById('statsContador').innerText = `${qtdItens} itens orçados`;
+      document.getElementById('statsContador').innerText = `${qtdItens} itens no orçamento`;
     }
 
     init();
