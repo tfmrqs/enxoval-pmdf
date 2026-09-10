@@ -212,6 +212,19 @@
       align-items: center;
     }
 
+    .btn-link {
+      display: inline-block;
+      margin-top: 0.25rem;
+      font-size: 0.8rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn-link:hover {
+      text-decoration: underline;
+    }
+
     .card-footer {
       display: flex;
       justify-content: space-between;
@@ -277,7 +290,7 @@
   </main>
 
   <footer>
-    <div id="statsContador" style="font-size: 0.85rem; color: var(--text-muted);">Iniciando leitura...</div>
+    <div id="statsContador" style="font-size: 0.85rem; color: var(--text-muted);">Carregando dados...</div>
     <div>Total Estimado: <span class="total-val" id="totalGeral">R$ 0,00</span></div>
   </footer>
 
@@ -287,14 +300,14 @@
     // Mapeamento dos cursos e seus GIDs
     const CSV_URLS = {
       'CFP': `${SHEET_BASE}&gid=0`,
-      'CFO': `${SHEET_BASE}&gid=SEU_GID_CFO`,
-      'ROTAM': `${SHEET_BASE}&gid=SEU_GID_ROTAM`,
-      'PATAMO': `${SHEET_BASE}&gid=SEU_GID_PATAMO`,
-      'BOPE': `${SHEET_BASE}&gid=SEU_GID_BOPE`
+      // 'CFO': `${SHEET_BASE}&gid=SEU_GID_CFO`,
+      // 'ROTAM': `${SHEET_BASE}&gid=SEU_GID_ROTAM`,
+      // 'PATAMO': `${SHEET_BASE}&gid=SEU_GID_PATAMO`,
+      // 'BOPE': `${SHEET_BASE}&gid=SEU_GID_BOPE`
     };
 
-    // Cole a URL completa ou gid da aba 'Preco' quando publicar
-    const URL_PRECO = ''; 
+    // Link oficial da aba Preco fornecido por você
+    const URL_PRECO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?gid=1625403665&single=true&output=csv';
 
     let cursoAtivo = 'CFP';
     let rawItens = [];
@@ -322,12 +335,12 @@
 
     async function parseCSV(url) {
       if (!url || url.includes('SEU_GID')) {
-        throw new Error('Aba não configurada na planilha.');
+        throw new Error('Aba não configurada.');
       }
 
       const response = await fetch(url, { redirect: 'follow' });
       if (!response.ok) {
-        throw new Error(`Erro na conexão (${response.status}): Verifique a publicação do arquivo.`);
+        throw new Error(`Falha HTTP ${response.status}`);
       }
 
       const text = await response.text();
@@ -343,9 +356,9 @@
     }
 
     async function carregarPrecos() {
-      if (!URL_PRECO) return;
       try {
         rawPrecos = await parseCSV(URL_PRECO);
+        console.log("Preços e Lojas carregados:", rawPrecos);
       } catch (e) {
         console.warn('Aba de preços indisponível:', e);
       }
@@ -356,13 +369,14 @@
       try {
         const url = CSV_URLS[curso];
         rawItens = await parseCSV(url);
+        console.log("Itens do curso carregados:", rawItens);
         povoarFiltroFases();
         aplicarFiltros();
       } catch (e) {
-        console.error("Falha ao carregar dados:", e);
+        console.error("Falha ao carregar curso:", e);
         document.getElementById('gridItens').innerHTML = `
           <div class="status-box">
-            <p style="color: #f87171; font-weight: bold; margin-bottom: 0.5rem;">Falha ao carregar o curso ${curso}:</p>
+            <p style="color: #f87171; font-weight: bold; margin-bottom: 0.5rem;">Falha ao carregar ${curso}:</p>
             <p style="font-size: 0.85rem;">${e.message}</p>
           </div>
         `;
@@ -371,16 +385,28 @@
     }
 
     function getValorProp(obj, chaves) {
-      for (const k of chaves) {
-        if (obj[k] !== undefined && obj[k] !== null && String(obj[k]).trim() !== '') {
-          return String(obj[k]).trim();
+      if (!obj) return '';
+      const normalizar = str => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const chavesDisponiveis = Object.keys(obj);
+
+      for (const procurada of chaves) {
+        const achada = chavesDisponiveis.find(k => normalizar(k) === normalizar(procurada));
+        if (achada && obj[achada] !== undefined && obj[achada] !== null && String(obj[achada]).trim() !== '') {
+          return String(obj[achada]).trim();
         }
       }
       return '';
     }
 
+    function converterPreco(val) {
+      if (!val) return 0;
+      const limpo = String(val).replace('R$', '').replace(/\s/g, '').replace(',', '.');
+      const num = parseFloat(limpo);
+      return isNaN(num) ? 0 : num;
+    }
+
     function povoarFiltroFases() {
-      const fases = [...new Set(rawItens.map(i => getValorProp(i, ['Fase', 'fase'])).filter(Boolean))];
+      const fases = [...new Set(rawItens.map(i => getValorProp(i, ['Fase', 'Etapa'])).filter(Boolean))];
       const select = document.getElementById('filterFase');
       select.innerHTML = '<option value="">Todas as Fases</option>' + 
         fases.map(f => `<option value="${f}">${f}</option>`).join('');
@@ -391,8 +417,8 @@
       const busca = document.getElementById('searchItem').value.toLowerCase();
 
       const filtrados = rawItens.filter(item => {
-        const itemNome = getValorProp(item, ['Item', 'Nome_Item', 'item']).toLowerCase();
-        const itemFase = getValorProp(item, ['Fase', 'fase']);
+        const itemNome = getValorProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']).toLowerCase();
+        const itemFase = getValorProp(item, ['Fase', 'Etapa']);
 
         const matchFase = !fase || itemFase === fase;
         const matchBusca = !busca || itemNome.includes(busca);
@@ -411,23 +437,27 @@
       }
 
       container.innerHTML = itens.map(item => {
-        const id = getValorProp(item, ['ID_Item', 'ID', 'id']) || Math.random().toString();
-        const nome = getValorProp(item, ['Item', 'Nome_Item', 'item']) || 'Equipamento sem identificação';
-        const fase = getValorProp(item, ['Fase', 'fase']);
-        const obrigatoriedade = getValorProp(item, ['Obrigatoriedade', 'obrigatoriedade']) || 'Obrigatório';
-        const especificacao = getValorProp(item, ['Especificacao', 'Especificação', 'especificacao']);
-        const img = getValorProp(item, ['URL_Imagem', 'Imagem', 'imagem']);
-        const qtdPadrao = parseInt(getValorProp(item, ['Qtd_Padrao', 'Qtd', 'quantidade'])) || 1;
+        const id = getValorProp(item, ['ID_Item', 'ID', 'Codigo']) || Math.random().toString();
+        const nome = getValorProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']) || 'Item sem nome';
+        const fase = getValorProp(item, ['Fase', 'Etapa']);
+        const obrigatoriedade = getValorProp(item, ['Obrigatoriedade', 'Obrigatorio', 'Tipo']) || 'Obrigatório';
+        const especificacao = getValorProp(item, ['Especificacao', 'Especificação', 'Detalhes']);
+        const img = getValorProp(item, ['URL_Imagem', 'Imagem', 'Foto']);
+        const qtdPadrao = parseInt(getValorProp(item, ['Qtd_Padrao', 'Qtd', 'Quantidade'])) || 1;
 
-        const ofertas = rawPrecos.filter(p => getValorProp(p, ['ID_Item', 'ID']) === id);
-        
+        // Filtra ofertas correspondentes ao ID_Item (desconsiderando maiúsculas/espaços)
+        const ofertas = rawPrecos.filter(p => {
+          const idPreco = getValorProp(p, ['ID_Item', 'ID', 'Codigo']);
+          return idPreco.toLowerCase() === id.toLowerCase();
+        });
+
         if (!selecoesUsuario[id]) {
           const defaultOferta = ofertas[0] || null;
           selecoesUsuario[id] = {
-            loja: defaultOferta ? defaultOferta.Nome_Loja : '',
+            loja: defaultOferta ? getValorProp(defaultOferta, ['Nome_Loja', 'Loja']) : '',
             qtd: qtdPadrao,
-            preco: defaultOferta ? parseFloat(String(defaultOferta.Preco).replace(',', '.')) || 0 : 0,
-            link: defaultOferta ? defaultOferta.Link : '#'
+            preco: defaultOferta ? converterPreco(getValorProp(defaultOferta, ['Preco', 'Valor'])) : 0,
+            link: defaultOferta ? getValorProp(defaultOferta, ['Link', 'URL']) : ''
           };
         }
 
@@ -448,20 +478,27 @@
               <div class="offer-box">
                 <label style="font-size: 0.75rem; color: var(--text-muted);">Fornecedor / Oferta:</label>
                 <select onchange="atualizarLoja('${id}', this.value)">
-                  ${ofertas.length ? ofertas.map(o => `
-                    <option value="${o.Nome_Loja}" ${o.Nome_Loja === sel.loja ? 'selected' : ''}>
-                      ${o.Nome_Loja} ${o.Marca_Vendida ? `(${o.Marca_Vendida})` : ''} - R$ ${o.Preco}
-                    </option>
-                  `).join('') : '<option value="">Sem ofertas cadastradas</option>'}
+                  ${ofertas.length ? ofertas.map(o => {
+                    const nomeLoja = getValorProp(o, ['Nome_Loja', 'Loja']);
+                    const marca = getValorProp(o, ['Marca_Vendida', 'Marca', 'Modelo']);
+                    const preco = converterPreco(getValorProp(o, ['Preco', 'Valor']));
+                    const isSelected = nomeLoja === sel.loja;
+                    return `
+                      <option value="${nomeLoja}" ${isSelected ? 'selected' : ''}>
+                        ${nomeLoja} ${marca ? `(${marca})` : ''} - R$ ${preco.toFixed(2).replace('.', ',')}
+                      </option>
+                    `;
+                  }).join('') : '<option value="">Sem ofertas vinculadas</option>'}
                 </select>
 
                 <div class="controls-row">
                   <div style="flex-grow: 1;">
-                    <label style="font-size: 0.7rem; color: var(--text-muted);">Qtd</label>
+                    <label style="font-size: 0.7rem; color: var(--text-muted);">Quantidade:</label>
                     <input type="number" min="0" value="${sel.qtd}" onchange="atualizarQtd('${id}', this.value)">
                   </div>
-                  ${sel.link && sel.link !== '#' ? `<a href="${sel.link}" target="_blank" style="margin-top: 1rem; font-size: 0.8rem; color: var(--primary);">Ver Loja ↗</a>` : ''}
                 </div>
+
+                ${sel.link ? `<a href="${sel.link}" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>` : ''}
 
                 <div class="card-footer">
                   <span style="font-size: 0.8rem; color: var(--text-muted);">Subtotal:</span>
@@ -475,11 +512,16 @@
     }
 
     function atualizarLoja(id, nomeLoja) {
-      const oferta = rawPrecos.find(p => getValorProp(p, ['ID_Item', 'ID']) === id && p.Nome_Loja === nomeLoja);
-      if (oferta) {
-        selecoesUsuario[id].loja = oferta.Nome_Loja;
-        selecoesUsuario[id].preco = parseFloat(String(oferta.Preco).replace(',', '.')) || 0;
-        selecoesUsuario[id].link = oferta.Link || '#';
+      const oferta = rawPrecos.find(p => {
+        const matchId = getValorProp(p, ['ID_Item', 'ID', 'Codigo']).toLowerCase() === id.toLowerCase();
+        const matchLoja = getValorProp(p, ['Nome_Loja', 'Loja']) === nomeLoja;
+        return matchId && matchLoja;
+      });
+
+      if (oferta && selecoesUsuario[id]) {
+        selecoesUsuario[id].loja = getValorProp(oferta, ['Nome_Loja', 'Loja']);
+        selecoesUsuario[id].preco = converterPreco(getValorProp(oferta, ['Preco', 'Valor']));
+        selecoesUsuario[id].link = getValorProp(oferta, ['Link', 'URL']);
       }
       aplicarFiltros();
     }
@@ -496,16 +538,16 @@
       let qtdItens = 0;
 
       rawItens.forEach(item => {
-        const id = getValorProp(item, ['ID_Item', 'ID', 'id']);
+        const id = getValorProp(item, ['ID_Item', 'ID', 'Codigo']);
         const sel = selecoesUsuario[id];
         if (sel) {
           total += sel.preco * sel.qtd;
-          if (sel.qtd > 0) qtdItens++;
+          if (sel.qtd > 0 && sel.preco > 0) qtdItens++;
         }
       });
 
       document.getElementById('totalGeral').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
-      document.getElementById('statsContador').innerText = `${qtdItens} itens selecionados no orçamento`;
+      document.getElementById('statsContador').innerText = `${qtdItens} itens orçados`;
     }
 
     init();
