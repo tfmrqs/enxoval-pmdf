@@ -509,36 +509,9 @@
     let rawItens = [];
     let rawPrecos = [];
     let selecoesUsuario = {};
-    const STORAGE_KEY = 'enxoval_pmdf_cfp_state';
-    const EXPIRACAO_MS = 20 * 60 * 1000;
 
-    function carregarSessaoSalva() {
-      try {
-        const salvo = localStorage.getItem(STORAGE_KEY);
-        if (!salvo) return {};
-        const data = JSON.parse(salvo);
-        if (data.timestamp && (Date.now() - data.timestamp < EXPIRACAO_MS)) {
-          return data.selecoes || {};
-        } else {
-          localStorage.removeItem(STORAGE_KEY);
-          return {};
-        }
-      } catch (e) {
-        return {};
-      }
-    }
-
-    function salvarSessao() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          timestamp: Date.now(),
-          selecoes: selecoesUsuario
-        }));
-      } catch (e) {}
-    }
-
-    async function init() {
-      selecoesUsuario = carregarSessaoSalva();
+   async function init() {
+      localStorage.removeItem('enxoval_pmdf_cfp_state');
       await carregarPrecos();
       await carregarItens();
     }
@@ -754,7 +727,6 @@
       }
       
       aplicarFiltros();
-      salvarSessao();
       if (abrirSidebarAuto && ofertaIdx !== '') {
         toggleSidebar(true);
       }
@@ -763,7 +735,6 @@
     function atualizarQtd(cardKey, qtd) {
       if (selecoesUsuario[cardKey]) {
         selecoesUsuario[cardKey].qtd = Math.max(1, parseInt(qtd, 10) || 1);
-        salvarSessao();
       }
       aplicarFiltros();
     }
