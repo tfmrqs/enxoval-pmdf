@@ -9,16 +9,18 @@
     :root {
       --bg: #0b0f19;
       --card-bg: #151d30;
+      --sidebar-bg: #111827;
       --border: #22304e;
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --accent: #10b981;
       --text: #f8fafc;
       --text-muted: #94a3b8;
+      --danger: #ef4444;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding-bottom: 110px; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 110px; overflow-x: hidden; }
 
     header {
       background: var(--card-bg);
@@ -45,6 +47,21 @@
     .btn-voltar:hover { color: var(--text); }
 
     h1 { font-size: 1.15rem; font-weight: 700; color: #fff; }
+
+    .btn-toggle-cart {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-toggle-cart:hover { background: var(--primary-hover); }
 
     main { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; }
 
@@ -154,6 +171,7 @@
     .subtotal { font-size: 0.95rem; font-weight: 700; color: var(--accent); }
     .subtotal.pendente { color: var(--text-muted); font-weight: 400; font-size: 0.85rem; }
 
+    /* Barra Fixa Inferior */
     footer {
       position: fixed;
       bottom: 0;
@@ -169,6 +187,168 @@
     }
 
     .total-val { font-size: 1.35rem; font-weight: 800; color: var(--accent); }
+
+    /* GAVETA LATERAL (SIDEBAR DRAWER) */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sidebar-drawer {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 100%;
+      max-width: 400px;
+      height: 100vh;
+      background: var(--sidebar-bg);
+      border-left: 1px solid var(--border);
+      z-index: 101;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -10px 0 25px rgba(0,0,0,0.5);
+    }
+    .sidebar-drawer.active {
+      right: 0;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sidebar-header h2 { font-size: 1.1rem; font-weight: 700; color: #fff; }
+
+    .btn-close-sidebar {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .btn-close-sidebar:hover { color: #fff; }
+
+    .sidebar-content {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 0.75rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      align-items: center;
+    }
+
+    .cart-item img {
+      width: 55px;
+      height: 55px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #0b0f19;
+      flex-shrink: 0;
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+      min-width: 0;
+    }
+
+    .cart-item-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cart-item-loja {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 0.25rem;
+    }
+
+    .cart-item-price {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .cart-qty-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.15rem 0.3rem;
+    }
+
+    .cart-qty-ctrl button {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0.1rem 0.3rem;
+      font-size: 0.85rem;
+    }
+    .cart-qty-ctrl button:hover { color: #fff; }
+    .cart-qty-ctrl span { font-size: 0.85rem; font-weight: 600; min-width: 18px; text-align: center; }
+
+    .btn-remove-item {
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0.25rem;
+      margin-left: 0.25rem;
+    }
+
+    .sidebar-footer {
+      padding: 1.25rem;
+      border-top: 1px solid var(--border);
+      background: #080c16;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .sidebar-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -176,7 +356,9 @@
   <header>
     <a href="index.html" class="btn-voltar">← Voltar para os Cursos</a>
     <h1>CFP - Curso de Formação de Praças</h1>
-    <div style="width: 120px;"></div>
+    <button class="btn-toggle-cart" onclick="toggleSidebar(true)">
+      📋 Resumo (<span id="cartCountBadge">0</span>)
+    </button>
   </header>
 
   <main>
@@ -191,6 +373,29 @@
     <div class="grid-itens" id="gridItens"></div>
   </main>
 
+  <!-- GAVETA LATERAL RETRÁTIL -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
+  <aside class="sidebar-drawer" id="sidebarDrawer">
+    <div class="sidebar-header">
+      <h2>Itens Selecionados (<span id="sidebarCount">0</span>)</h2>
+      <button class="btn-close-sidebar" onclick="toggleSidebar(false)">✕</button>
+    </div>
+
+    <div class="sidebar-content" id="sidebarItemsList">
+      <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 2rem;">
+        Nenhum item selecionado ainda.<br>Escolha uma loja/marca nos cards ao lado!
+      </p>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-row">
+        <span>Total do Enxoval:</span>
+        <span class="total-val" id="sidebarTotal">R$ 0,00</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- BARRA INFERIOR FIXA -->
   <footer>
     <div id="statsContador" style="font-size: 0.85rem; color: var(--text-muted);">Carregando dados...</div>
     <div>Total Estimado: <span class="total-val" id="totalGeral">R$ 0,00</span></div>
@@ -288,6 +493,7 @@
 
       renderCards(filtrados);
       calcularTotal();
+      renderSidebar();
     }
 
     function renderCards(itens) {
@@ -320,7 +526,10 @@
             ofertaIndex: '',
             qtd: qtdPadrao,
             preco: 0,
-            link: ''
+            link: '',
+            nome: nome,
+            img: img || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto',
+            lojaLabel: ''
           };
         }
 
@@ -341,7 +550,7 @@
 
               <div class="offer-box">
                 <label style="font-size: 0.75rem; color: var(--text-muted);">Escolha a Loja / Marca:</label>
-                <select onchange="atualizarOferta('${cardKey}', this.value)">
+                <select onchange="atualizarOferta('${cardKey}', this.value, true)">
                   <option value="">-- Selecione uma opção --</option>
                   ${ofertas.map((o, idx) => {
                     const nomeLoja = getProp(o, ['Nome_Loja', 'Loja']);
@@ -359,7 +568,7 @@
                 <div class="controls-row">
                   <div style="flex-grow: 1;">
                     <label style="font-size: 0.7rem; color: var(--text-muted);">Quantidade:</label>
-                    <input type="number" min="0" value="${sel.qtd}" onchange="atualizarQtd('${cardKey}', this.value)">
+                    <input type="number" min="1" value="${sel.qtd}" onchange="atualizarQtd('${cardKey}', this.value)">
                   </div>
                 </div>
 
@@ -379,13 +588,14 @@
       }).join('');
     }
 
-    function atualizarOferta(cardKey, ofertaIdx) {
+    function atualizarOferta(cardKey, ofertaIdx, abrirSidebarAuto = false) {
       if (!selecoesUsuario[cardKey]) return;
 
       if (ofertaIdx === '') {
         selecoesUsuario[cardKey].ofertaIndex = '';
         selecoesUsuario[cardKey].preco = 0;
         selecoesUsuario[cardKey].link = '';
+        selecoesUsuario[cardKey].lojaLabel = '';
       } else {
         const ofertas = rawPrecos.filter(p => {
           const pId = getProp(p, ['ID_Item', 'ID', 'Codigo']);
@@ -396,19 +606,76 @@
 
         const oferta = ofertas[parseInt(ofertaIdx, 10)];
         if (oferta) {
+          const nomeLoja = getProp(oferta, ['Nome_Loja', 'Loja']);
+          const marca = getProp(oferta, ['Marca_Vendida', 'Marca', 'Modelo']);
           selecoesUsuario[cardKey].ofertaIndex = ofertaIdx;
           selecoesUsuario[cardKey].preco = converterPreco(getProp(oferta, ['Preco', 'Valor']));
           selecoesUsuario[cardKey].link = getProp(oferta, ['Link', 'URL']);
+          selecoesUsuario[cardKey].lojaLabel = `${nomeLoja} ${marca ? `(${marca})` : ''}`;
         }
       }
       aplicarFiltros();
+      if (abrirSidebarAuto && ofertaIdx !== '') {
+        toggleSidebar(true);
+      }
     }
 
     function atualizarQtd(cardKey, qtd) {
       if (selecoesUsuario[cardKey]) {
-        selecoesUsuario[cardKey].qtd = parseInt(qtd, 10) || 0;
+        selecoesUsuario[cardKey].qtd = Math.max(1, parseInt(qtd, 10) || 1);
       }
       aplicarFiltros();
+    }
+
+    function toggleSidebar(show) {
+      const drawer = document.getElementById('sidebarDrawer');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (show) {
+        drawer.classList.add('active');
+        overlay.classList.add('active');
+      } else {
+        drawer.classList.remove('active');
+        overlay.classList.remove('active');
+      }
+    }
+
+    function renderSidebar() {
+      const container = document.getElementById('sidebarItemsList');
+      const itensAtivos = Object.entries(selecoesUsuario).filter(([_, val]) => val.ofertaIndex !== '' && val.preco > 0);
+
+      document.getElementById('cartCountBadge').innerText = itensAtivos.length;
+      document.getElementById('sidebarCount').innerText = itensAtivos.length;
+
+      if (!itensAtivos.length) {
+        container.innerHTML = `
+          <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 2rem;">
+            Nenhum item selecionado ainda.<br>Escolha uma loja/marca nos cards ao lado!
+          </p>
+        `;
+        return;
+      }
+
+      container.innerHTML = itensAtivos.map(([key, val]) => {
+        const subtotal = val.preco * val.qtd;
+        return `
+          <div class="cart-item">
+            <img src="${val.img}" alt="${val.nome}" onerror="this.src='https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'">
+            <div class="cart-item-details">
+              <div class="cart-item-title" title="${val.nome}">${val.nome}</div>
+              <div class="cart-item-loja" title="${val.lojaLabel}">${val.lojaLabel}</div>
+              <div class="cart-item-price">R$ ${subtotal.toFixed(2).replace('.', ',')}</div>
+            </div>
+
+            <div class="cart-qty-ctrl">
+              <button onclick="atualizarQtd('${key}', ${val.qtd - 1})">−</button>
+              <span>${val.qtd}</span>
+              <button onclick="atualizarQtd('${key}', ${val.qtd + 1})">+</button>
+            </div>
+
+            <button class="btn-remove-item" title="Remover seleção" onclick="atualizarOferta('${key}', '')">🗑️</button>
+          </div>
+        `;
+      }).join('');
     }
 
     function calcularTotal() {
@@ -424,8 +691,10 @@
         }
       });
 
-      document.getElementById('totalGeral').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
-      document.getElementById('statsContador').innerText = `${qtdItens} de ${rawItens.length} itens selecionados`;
+      const totalFormatado = `R$ ${total.toFixed(2).replace('.', ',')}`;
+      document.getElementById('totalGeral').innerText = totalFormatado;
+      document.getElementById('sidebarTotal').innerText = totalFormatado;
+      document.getElementById('statsContador').innerText = `${qtdItens} de ${rawItens.length} itens orçados`;
     }
 
     init();
