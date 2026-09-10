@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enxoval CFP - PMDF</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --border: #22304e;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #10b981;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 110px; }
+
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .btn-voltar {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: 0.2s;
+    }
+    .btn-voltar:hover { color: var(--text); }
+
+    h1 { font-size: 1.15rem; font-weight: 700; color: #fff; }
+
+    main { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      background: var(--card-bg);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .toolbar select, .toolbar input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    .toolbar input { min-width: 250px; }
+
+    .grid-itens {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #0b0f19;
+    }
+
+    .card-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; flex-grow: 1; }
+
+    .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .tag {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .tag-obrigatorio { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .tag-fase { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+
+    .item-title { font-size: 1rem; font-weight: 600; line-height: 1.3; }
+    .item-spec { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+    .offer-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .offer-box select, .offer-box input {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      width: 100%;
+      outline: none;
+    }
+
+    .controls-row { display: flex; gap: 0.5rem; align-items: center; }
+
+    .btn-link {
+      display: inline-block;
+      margin-top: 0.25rem;
+      font-size: 0.8rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .subtotal { font-size: 0.95rem; font-weight: 700; color: var(--accent); }
+    .subtotal.pendente { color: var(--text-muted); font-weight: 400; font-size: 0.85rem; }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #070a12;
+      border-top: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .total-val { font-size: 1.35rem; font-weight: 800; color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="btn-voltar">← Voltar para os Cursos</a>
+    <h1>CFP - Curso de Formação de Praças</h1>
+    <div style="width: 120px;"></div>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Fase:</label>
+        <select id="filterFase" onchange="aplicarFiltros()"></select>
+      </div>
+      <input type="text" id="searchItem" placeholder="Buscar equipamento no CFP..." oninput="aplicarFiltros()">
+    </div>
+
+    <div class="grid-itens" id="gridItens"></div>
+  </main>
+
+  <footer>
+    <div id="statsContador" style="font-size: 0.85rem; color: var(--text-muted);">Carregando dados...</div>
+    <div>Total Estimado: <span class="total-val" id="totalGeral">R$ 0,00</span></div>
+  </footer>
+
+  <script>
+    const URL_CFP = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?gid=0&single=true&output=csv';
+    const URL_PRECO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?gid=1625403665&single=true&output=csv';
+
+    let rawItens = [];
+    let rawPrecos = [];
+    let selecoesUsuario = {};
+
+    async function init() {
+      await carregarPrecos();
+      await carregarItens();
+    }
+
+    async function parseCSV(url) {
+      const response = await fetch(url, { redirect: 'follow' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const text = await response.text();
+
+      return new Promise((resolve, reject) => {
+        Papa.parse(text, {
+          header: true,
+          skipEmptyLines: 'greedy',
+          transformHeader: h => h.trim(),
+          complete: results => resolve(results.data),
+          error: err => reject(err)
+        });
+      });
+    }
+
+    async function carregarPrecos() {
+      try {
+        rawPrecos = await parseCSV(URL_PRECO);
+      } catch (e) {
+        console.warn('Aba de preços indisponível:', e);
+      }
+    }
+
+    async function carregarItens() {
+      document.getElementById('statsContador').innerText = 'Carregando enxoval do CFP...';
+      try {
+        rawItens = await parseCSV(URL_CFP);
+        povoarFiltroFases();
+        aplicarFiltros();
+      } catch (e) {
+        document.getElementById('gridItens').innerHTML = `<p style="color: var(--text-muted); padding: 1rem;">Erro ao carregar dados: ${e.message}</p>`;
+      }
+    }
+
+    function getProp(obj, chavesPossiveis) {
+      if (!obj) return '';
+      const limpar = str => String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+      const chavesReais = Object.keys(obj);
+
+      for (const procurada of chavesPossiveis) {
+        const limpaProcurada = limpar(procurada);
+        const achada = chavesReais.find(k => limpar(k) === limpaProcurada);
+        if (achada && obj[achada] !== undefined && obj[achada] !== null) {
+          return String(obj[achada]).trim();
+        }
+      }
+      return '';
+    }
+
+    function converterPreco(val) {
+      if (!val) return 0;
+      const limpo = String(val).replace('R$', '').replace(/\s/g, '').replace(',', '.');
+      const num = parseFloat(limpo);
+      return isNaN(num) ? 0 : num;
+    }
+
+    function povoarFiltroFases() {
+      const fases = [...new Set(rawItens.map(i => getProp(i, ['Fase', 'Etapa'])).filter(Boolean))];
+      const select = document.getElementById('filterFase');
+      select.innerHTML = '<option value="">Todas as Fases</option>' + 
+        fases.map(f => `<option value="${f}">${f}</option>`).join('');
+    }
+
+    function aplicarFiltros() {
+      const fase = document.getElementById('filterFase').value;
+      const busca = document.getElementById('searchItem').value.toLowerCase();
+
+      const filtrados = rawItens.filter(item => {
+        const itemNome = getProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']).toLowerCase();
+        const itemFase = getProp(item, ['Fase', 'Etapa']);
+
+        const matchFase = !fase || itemFase === fase;
+        const matchBusca = !busca || itemNome.includes(busca);
+        return matchFase && matchBusca;
+      });
+
+      renderCards(filtrados);
+      calcularTotal();
+    }
+
+    function renderCards(itens) {
+      const container = document.getElementById('gridItens');
+      if (!itens.length) {
+        container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhum item encontrado.</p>';
+        return;
+      }
+
+      container.innerHTML = itens.map(item => {
+        const id = getProp(item, ['ID_Item', 'ID', 'Codigo']);
+        const nome = getProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']) || 'Item sem nome';
+        const fase = getProp(item, ['Fase', 'Etapa']);
+        const obrigatoriedade = getProp(item, ['Obrigatoriedade', 'Obrigatorio']) || 'Obrigatório';
+        const especificacao = getProp(item, ['Especificacao', 'Especificação', 'Detalhes']);
+        const img = getProp(item, ['URL_Imagem', 'Imagem', 'Foto']);
+        const qtdPadrao = parseInt(getProp(item, ['Qtd_Padrao', 'Qtd', 'Quantidade'])) || 1;
+
+        const ofertas = rawPrecos.filter(p => {
+          const pId = getProp(p, ['ID_Item', 'ID', 'Codigo']);
+          const pItem = getProp(p, ['Item', 'Nome_Item', 'Nome']);
+          return (id && pId && pId.toLowerCase() === id.toLowerCase()) || 
+                 (nome && pItem && pItem.toLowerCase() === nome.toLowerCase());
+        });
+
+        const cardKey = id || nome;
+
+        if (!selecoesUsuario[cardKey]) {
+          selecoesUsuario[cardKey] = {
+            ofertaIndex: '',
+            qtd: qtdPadrao,
+            preco: 0,
+            link: ''
+          };
+        }
+
+        const sel = selecoesUsuario[cardKey];
+        const subtotal = (sel.preco * sel.qtd) || 0;
+        const itemSelecionado = sel.ofertaIndex !== '' && sel.preco > 0;
+
+        return `
+          <div class="card">
+            <img src="${img || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'}" alt="${nome}" onerror="this.src='https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'">
+            <div class="card-body">
+              <div class="card-tags">
+                <span class="tag tag-obrigatorio">${obrigatoriedade}</span>
+                ${fase ? `<span class="tag tag-fase">${fase}</span>` : ''}
+              </div>
+              <div class="item-title">${nome}</div>
+              ${especificacao ? `<p class="item-spec">${especificacao}</p>` : ''}
+
+              <div class="offer-box">
+                <label style="font-size: 0.75rem; color: var(--text-muted);">Escolha a Loja / Marca:</label>
+                <select onchange="atualizarOferta('${cardKey}', this.value)">
+                  <option value="">-- Selecione uma opção --</option>
+                  ${ofertas.map((o, idx) => {
+                    const nomeLoja = getProp(o, ['Nome_Loja', 'Loja']);
+                    const marca = getProp(o, ['Marca_Vendida', 'Marca', 'Modelo']);
+                    const preco = converterPreco(getProp(o, ['Preco', 'Valor']));
+                    const isSelected = String(idx) === String(sel.ofertaIndex);
+                    return `
+                      <option value="${idx}" ${isSelected ? 'selected' : ''}>
+                        ${nomeLoja} ${marca ? `(${marca})` : ''} - R$ ${preco.toFixed(2).replace('.', ',')}
+                      </option>
+                    `;
+                  }).join('')}
+                </select>
+
+                <div class="controls-row">
+                  <div style="flex-grow: 1;">
+                    <label style="font-size: 0.7rem; color: var(--text-muted);">Quantidade:</label>
+                    <input type="number" min="0" value="${sel.qtd}" onchange="atualizarQtd('${cardKey}', this.value)">
+                  </div>
+                </div>
+
+                ${sel.link ? `<a href="${sel.link}" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>` : ''}
+
+                <div class="card-footer">
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Subtotal:</span>
+                  ${itemSelecionado 
+                    ? `<span class="subtotal">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>` 
+                    : `<span class="subtotal pendente">Não selecionado</span>`
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function atualizarOferta(cardKey, ofertaIdx) {
+      if (!selecoesUsuario[cardKey]) return;
+
+      if (ofertaIdx === '') {
+        selecoesUsuario[cardKey].ofertaIndex = '';
+        selecoesUsuario[cardKey].preco = 0;
+        selecoesUsuario[cardKey].link = '';
+      } else {
+        const ofertas = rawPrecos.filter(p => {
+          const pId = getProp(p, ['ID_Item', 'ID', 'Codigo']);
+          const pItem = getProp(p, ['Item', 'Nome_Item', 'Nome']);
+          return (pId && pId.toLowerCase() === cardKey.toLowerCase()) || 
+                 (pItem && pItem.toLowerCase() === cardKey.toLowerCase());
+        });
+
+        const oferta = ofertas[parseInt(ofertaIdx, 10)];
+        if (oferta) {
+          selecoesUsuario[cardKey].ofertaIndex = ofertaIdx;
+          selecoesUsuario[cardKey].preco = converterPreco(getProp(oferta, ['Preco', 'Valor']));
+          selecoesUsuario[cardKey].link = getProp(oferta, ['Link', 'URL']);
+        }
+      }
+      aplicarFiltros();
+    }
+
+    function atualizarQtd(cardKey, qtd) {
+      if (selecoesUsuario[cardKey]) {
+        selecoesUsuario[cardKey].qtd = parseInt(qtd, 10) || 0;
+      }
+      aplicarFiltros();
+    }
+
+    function calcularTotal() {
+      let total = 0;
+      let qtdItens = 0;
+
+      rawItens.forEach(item => {
+        const cardKey = getProp(item, ['ID_Item', 'ID', 'Codigo']) || getProp(item, ['Item', 'Nome_Item', 'Nome']);
+        const sel = selecoesUsuario[cardKey];
+        if (sel && sel.ofertaIndex !== '' && sel.preco > 0) {
+          total += sel.preco * sel.qtd;
+          if (sel.qtd > 0) qtdItens++;
+        }
+      });
+
+      document.getElementById('totalGeral').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+      document.getElementById('statsContador').innerText = `${qtdItens} de ${rawItens.length} itens selecionados`;
+    }
+
+    init();
+  </script>
+</body>
+</html>
