@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Enxovais - PMDF</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <title>Sistema de Enxovais Operacionais - PMDF</title>
   <style>
     :root {
       --bg: #0b0f19;
@@ -15,447 +14,188 @@
       --accent: #10b981;
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --danger: #ef4444;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding-bottom: 110px; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
     header {
       background: var(--card-bg);
       border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
     }
 
-    h1 { font-size: 1.25rem; font-weight: 700; color: #fff; }
-
-    .nav-courses { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .course-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-    .course-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-
-    main { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; }
-
-    /* Painel de diagnóstico */
-    #debugBox {
-      background: #1e293b;
-      border: 1px dashed #475569;
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      font-family: monospace;
-      font-size: 0.8rem;
-      color: #cbd5e1;
+    .badge {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid var(--primary);
+      color: #60a5fa;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
       margin-bottom: 1rem;
     }
 
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      background: var(--card-bg);
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--border);
+    h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
+    p.subtitle { color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1rem; line-height: 1.5; }
+
+    main {
+      max-width: 1100px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+      flex-grow: 1;
+      width: 100%;
     }
 
-    .toolbar select, .toolbar input {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      outline: none;
-      font-size: 0.9rem;
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    .grid-itens {
+    .courses-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
     }
 
-    .card {
+    .course-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
+      border-radius: 12px;
+      padding: 1.75rem;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
     }
 
-    .card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      background: #0b0f19;
+    .course-card:hover:not(.disabled) {
+      transform: translateY(-4px);
+      border-color: var(--primary);
     }
 
-    .card-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; flex-grow: 1; }
+    .course-card.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-    .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .tag {
+    .course-tag {
       font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
       padding: 0.2rem 0.5rem;
       border-radius: 4px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .tag-obrigatorio { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-    .tag-fase { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-
-    .item-title { font-size: 1rem; font-weight: 600; line-height: 1.3; }
-    .item-spec { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
-
-    .offer-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      padding: 0.75rem;
-      border-radius: 6px;
-      margin-top: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .offer-box select, .offer-box input {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.45rem;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      width: 100%;
-      outline: none;
-    }
-
-    .controls-row { display: flex; gap: 0.5rem; align-items: center; }
-
-    .btn-link {
       display: inline-block;
-      margin-top: 0.25rem;
-      font-size: 0.8rem;
-      color: var(--primary);
-      text-decoration: none;
+      margin-bottom: 0.75rem;
+      width: fit-content;
+    }
+
+    .tag-active { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .tag-soon { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); }
+
+    .course-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .course-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.5rem; }
+
+    .card-action {
+      font-size: 0.9rem;
       font-weight: 600;
-    }
-
-    .card-footer {
+      color: var(--primary);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding-top: 0.5rem;
-      border-top: 1px solid var(--border);
+      gap: 0.4rem;
     }
-
-    .subtotal { font-size: 0.95rem; font-weight: 700; color: var(--accent); }
 
     footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #070a12;
       border-top: 1px solid var(--border);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 20;
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
     }
-
-    .total-val { font-size: 1.35rem; font-weight: 800; color: var(--accent); }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Enxovais Operacionais PMDF</h1>
-    <nav class="nav-courses" id="courseNav"></nav>
+    <div class="badge">Polícia Militar do Distrito Federal</div>
+    <h1>Plataforma de Enxovais</h1>
+    <p class="subtitle">Guia interativo de equipamentos, especificações de edital e comparador de preços para cursos de formação e especializações operacionais.</p>
   </header>
 
   <main>
-    <div id="debugBox">Verificando status de sincronização...</div>
+    <div class="section-title">Formação Básica</div>
+    <div class="courses-grid">
+      <!-- CFP ATIVO -->
+      <a href="cfp.html" class="course-card">
+        <div>
+          <span class="course-tag tag-active">Disponível</span>
+          <div class="course-title">CFP - Curso de Formação de Praças</div>
+          <p class="course-desc">Listagem completa do enxoval de internato, adaptação, fardamentos, cutelaria e kit de manutenção de armamento.</p>
+        </div>
+        <div class="card-action">Acessar e Calcular Enxoval →</div>
+      </a>
 
-    <div class="toolbar">
-      <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <label style="font-size: 0.8rem; color: var(--text-muted);">Fase:</label>
-        <select id="filterFase" onchange="aplicarFiltros()"></select>
+      <!-- CFO (EM BREVE) -->
+      <div class="course-card disabled">
+        <div>
+          <span class="course-tag tag-soon">Em Breve</span>
+          <div class="course-title">CFO - Curso de Formação de Oficiais</div>
+          <p class="course-desc">Itens de adaptação da Academia de Polícia Militar de Brasília (APMB), uniformes e materiais de instrução.</p>
+        </div>
+        <div class="card-action" style="color: var(--text-muted);">Aguardando Edital</div>
       </div>
-      <input type="text" id="searchItem" placeholder="Buscar equipamento..." oninput="aplicarFiltros()">
     </div>
 
-    <div class="grid-itens" id="gridItens"></div>
+    <div class="section-title">Cursos de Especialização Tática</div>
+    <div class="courses-grid">
+      <!-- ROTAM -->
+      <div class="course-card disabled">
+        <div>
+          <span class="course-tag tag-soon">Em Breve</span>
+          <div class="course-title">ROTAM</div>
+          <p class="course-desc">Curso Operacional de ROTAM (COR). Equipamentos individuais para patrulhamento tático e módulo rústico.</p>
+        </div>
+        <div class="card-action" style="color: var(--text-muted);">Em desenvolvimento</div>
+      </div>
+
+      <!-- PATAMO -->
+      <div class="course-card disabled">
+        <div>
+          <span class="course-tag tag-soon">Em Breve</span>
+          <div class="course-title">PATAMO</div>
+          <p class="course-desc">Curso de Patrulhamento Tático Móvel (CPChoque). Material de CDC, choque ligeiro e terrenos hostis.</p>
+        </div>
+        <div class="card-action" style="color: var(--text-muted);">Em desenvolvimento</div>
+      </div>
+
+      <!-- BOPE -->
+      <div class="course-card disabled">
+        <div>
+          <span class="course-tag tag-soon">Em Breve</span>
+          <div class="course-title">BOPE (COEsp)</div>
+          <p class="course-desc">Curso de Operações Especiais. Equipamentos de alto padrão para revista técnica de operações especiais.</p>
+        </div>
+        <div class="card-action" style="color: var(--text-muted);">Em desenvolvimento</div>
+      </div>
+    </div>
   </main>
 
   <footer>
-    <div id="statsContador" style="font-size: 0.85rem; color: var(--text-muted);">Aguardando...</div>
-    <div>Total Estimado: <span class="total-val" id="totalGeral">R$ 0,00</span></div>
+    Calculadora e conferência de enxoval • PMDF
   </footer>
 
-  <script>
-    const URL_CFP = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?gid=0&single=true&output=csv';
-    const URL_PRECO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?gid=1625403665&single=true&output=csv';
-
-    const CSV_URLS = { 'CFP': URL_CFP };
-
-    let cursoAtivo = 'CFP';
-    let rawItens = [];
-    let rawPrecos = [];
-    let selecoesUsuario = {};
-
-    async function init() {
-      montarNavegacaoCursos();
-      await carregarPrecos();
-      await carregarCurso(cursoAtivo);
-    }
-
-    function montarNavegacaoCursos() {
-      const nav = document.getElementById('courseNav');
-      nav.innerHTML = Object.keys(CSV_URLS).map(c => `
-        <button class="course-btn ${c === cursoAtivo ? 'active' : ''}" onclick="mudarCurso('${c}')">${c}</button>
-      `).join('');
-    }
-
-    async function mudarCurso(curso) {
-      cursoAtivo = curso;
-      montarNavegacaoCursos();
-      await carregarCurso(curso);
-    }
-
-    async function parseCSV(url) {
-      const response = await fetch(url, { redirect: 'follow' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const text = await response.text();
-
-      return new Promise((resolve, reject) => {
-        Papa.parse(text, {
-          header: true,
-          skipEmptyLines: 'greedy',
-          transformHeader: h => h.trim(), // Remove espaços invisíveis do cabeçalho
-          complete: results => resolve(results.data),
-          error: err => reject(err)
-        });
-      });
-    }
-
-    async function carregarPrecos() {
-      const debug = document.getElementById('debugBox');
-      try {
-        rawPrecos = await parseCSV(URL_PRECO);
-        const colunas = rawPrecos.length > 0 ? Object.keys(rawPrecos[0]).join(', ') : 'Nenhuma';
-        debug.innerHTML = `✅ <strong>Aba Preço conectada:</strong> ${rawPrecos.length} linhas lidas. Colunas detectadas: [${colunas}]`;
-      } catch (e) {
-        debug.innerHTML = `❌ <strong>Erro na aba Preço:</strong> ${e.message}`;
-      }
-    }
-
-    async function carregarCurso(curso) {
-      document.getElementById('statsContador').innerText = `Carregando enxoval do ${curso}...`;
-      try {
-        rawItens = await parseCSV(CSV_URLS[curso]);
-        povoarFiltroFases();
-        aplicarFiltros();
-      } catch (e) {
-        document.getElementById('gridItens').innerHTML = `<p style="color: var(--text-muted); padding: 1rem;">Erro ao carregar itens: ${e.message}</p>`;
-      }
-    }
-
-    // Normalizador de chaves: ignora maiúsculas, espaços e símbolos
-    function getProp(obj, chavesPossiveis) {
-      if (!obj) return '';
-      const limpar = str => String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
-      const chavesReais = Object.keys(obj);
-
-      for (const procurada of chavesPossiveis) {
-        const limpaProcurada = limpar(procurada);
-        const achada = chavesReais.find(k => limpar(k) === limpaProcurada);
-        if (achada && obj[achada] !== undefined && obj[achada] !== null) {
-          return String(obj[achada]).trim();
-        }
-      }
-      return '';
-    }
-
-    function converterPreco(val) {
-      if (!val) return 0;
-      const limpo = String(val).replace('R$', '').replace(/\s/g, '').replace(',', '.');
-      const num = parseFloat(limpo);
-      return isNaN(num) ? 0 : num;
-    }
-
-    function povoarFiltroFases() {
-      const fases = [...new Set(rawItens.map(i => getProp(i, ['Fase', 'Etapa'])).filter(Boolean))];
-      const select = document.getElementById('filterFase');
-      select.innerHTML = '<option value="">Todas as Fases</option>' + 
-        fases.map(f => `<option value="${f}">${f}</option>`).join('');
-    }
-
-    function aplicarFiltros() {
-      const fase = document.getElementById('filterFase').value;
-      const busca = document.getElementById('searchItem').value.toLowerCase();
-
-      const filtrados = rawItens.filter(item => {
-        const itemNome = getProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']).toLowerCase();
-        const itemFase = getProp(item, ['Fase', 'Etapa']);
-
-        const matchFase = !fase || itemFase === fase;
-        const matchBusca = !busca || itemNome.includes(busca);
-        return matchFase && matchBusca;
-      });
-
-      renderCards(filtrados);
-      calcularTotal();
-    }
-
-    function renderCards(itens) {
-      const container = document.getElementById('gridItens');
-      if (!itens.length) {
-        container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhum item encontrado.</p>';
-        return;
-      }
-
-      container.innerHTML = itens.map(item => {
-        const id = getProp(item, ['ID_Item', 'ID', 'Codigo']);
-        const nome = getProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']) || 'Item sem nome';
-        const fase = getProp(item, ['Fase', 'Etapa']);
-        const obrigatoriedade = getProp(item, ['Obrigatoriedade', 'Obrigatorio']) || 'Obrigatório';
-        const especificacao = getProp(item, ['Especificacao', 'Especificação', 'Detalhes']);
-        const img = getProp(item, ['URL_Imagem', 'Imagem', 'Foto']);
-        const qtdPadrao = parseInt(getProp(item, ['Qtd_Padrao', 'Qtd', 'Quantidade'])) || 1;
-
-        // Tenta cruzar por ID_Item e fallback por Nome do Item
-        const ofertas = rawPrecos.filter(p => {
-          const pId = getProp(p, ['ID_Item', 'ID', 'Codigo']);
-          const pItem = getProp(p, ['Item', 'Nome_Item', 'Nome']);
-          
-          const matchPorId = id && pId && pId.toLowerCase() === id.toLowerCase();
-          const matchPorNome = nome && pItem && pItem.toLowerCase() === nome.toLowerCase();
-          return matchPorId || matchPorNome;
-        });
-
-        const cardKey = id || nome;
-
-        if (!selecoesUsuario[cardKey]) {
-          const defaultOferta = ofertas[0] || null;
-          selecoesUsuario[cardKey] = {
-            loja: defaultOferta ? getProp(defaultOferta, ['Nome_Loja', 'Loja']) : '',
-            qtd: qtdPadrao,
-            preco: defaultOferta ? converterPreco(getProp(defaultOferta, ['Preco', 'Valor'])) : 0,
-            link: defaultOferta ? getProp(defaultOferta, ['Link', 'URL']) : ''
-          };
-        }
-
-        const sel = selecoesUsuario[cardKey];
-        const subtotal = (sel.preco * sel.qtd) || 0;
-
-        return `
-          <div class="card">
-            <img src="${img || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'}" alt="${nome}" onerror="this.src='https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'">
-            <div class="card-body">
-              <div class="card-tags">
-                <span class="tag tag-obrigatorio">${obrigatoriedade}</span>
-                ${fase ? `<span class="tag tag-fase">${fase}</span>` : ''}
-              </div>
-              <div class="item-title">${nome}</div>
-              ${especificacao ? `<p class="item-spec">${especificacao}</p>` : ''}
-
-              <div class="offer-box">
-                <label style="font-size: 0.75rem; color: var(--text-muted);">Fornecedor / Oferta (${ofertas.length}):</label>
-                <select onchange="atualizarLoja('${cardKey}', this.value)">
-                  ${ofertas.length ? ofertas.map(o => {
-                    const nomeLoja = getProp(o, ['Nome_Loja', 'Loja']);
-                    const marca = getProp(o, ['Marca_Vendida', 'Marca', 'Modelo']);
-                    const preco = converterPreco(getProp(o, ['Preco', 'Valor']));
-                    const isSelected = nomeLoja === sel.loja;
-                    return `
-                      <option value="${nomeLoja}" ${isSelected ? 'selected' : ''}>
-                        ${nomeLoja} ${marca ? `(${marca})` : ''} - R$ ${preco.toFixed(2).replace('.', ',')}
-                      </option>
-                    `;
-                  }).join('') : '<option value="">Sem ofertas vinculadas</option>'}
-                </select>
-
-                <div class="controls-row">
-                  <div style="flex-grow: 1;">
-                    <label style="font-size: 0.7rem; color: var(--text-muted);">Quantidade:</label>
-                    <input type="number" min="0" value="${sel.qtd}" onchange="atualizarQtd('${cardKey}', this.value)">
-                  </div>
-                </div>
-
-                ${sel.link ? `<a href="${sel.link}" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>` : ''}
-
-                <div class="card-footer">
-                  <span style="font-size: 0.8rem; color: var(--text-muted);">Subtotal:</span>
-                  <span class="subtotal">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function atualizarLoja(cardKey, nomeLoja) {
-      const oferta = rawPrecos.find(p => {
-        const pId = getProp(p, ['ID_Item', 'ID', 'Codigo']);
-        const pItem = getProp(p, ['Item', 'Nome_Item', 'Nome']);
-        const matchKey = (pId && pId.toLowerCase() === cardKey.toLowerCase()) || 
-                         (pItem && pItem.toLowerCase() === cardKey.toLowerCase());
-        const matchLoja = getProp(p, ['Nome_Loja', 'Loja']) === nomeLoja;
-        return matchKey && matchLoja;
-      });
-
-      if (oferta && selecoesUsuario[cardKey]) {
-        selecoesUsuario[cardKey].loja = getProp(oferta, ['Nome_Loja', 'Loja']);
-        selecoesUsuario[cardKey].preco = converterPreco(getProp(oferta, ['Preco', 'Valor']));
-        selecoesUsuario[cardKey].link = getProp(oferta, ['Link', 'URL']);
-      }
-      aplicarFiltros();
-    }
-
-    function atualizarQtd(cardKey, qtd) {
-      if (selecoesUsuario[cardKey]) {
-        selecoesUsuario[cardKey].qtd = parseInt(qtd) || 0;
-      }
-      aplicarFiltros();
-    }
-
-    function calcularTotal() {
-      let total = 0;
-      let qtdItens = 0;
-
-      rawItens.forEach(item => {
-        const cardKey = getProp(item, ['ID_Item', 'ID', 'Codigo']) || getProp(item, ['Item', 'Nome_Item', 'Nome']);
-        const sel = selecoesUsuario[cardKey];
-        if (sel) {
-          total += sel.preco * sel.qtd;
-          if (sel.qtd > 0 && sel.preco > 0) qtdItens++;
-        }
-      });
-
-      document.getElementById('totalGeral').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
-      document.getElementById('statsContador').innerText = `${qtdItens} itens no orçamento`;
-    }
-
-    init();
-  </script>
 </body>
 </html>
