@@ -169,7 +169,21 @@
       font-weight: 600;
     }
     .btn-link:hover { text-decoration: underline; }
-
+    
+    .cupom-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px dashed #f59e0b;
+      color: #fbbf24;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    
     .card-footer {
       display: flex;
       justify-content: space-between;
@@ -641,6 +655,7 @@
             qtd: qtdPadrao,
             preco: 0,
             link: '',
+            cupom: '',
             nome: nome,
             img: img || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto',
             lojaLabel: ''
@@ -687,8 +702,13 @@
                   </div>
                 </div>
 
-                ${sel.link ? `<a href="${sel.link}" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>` : ''}
-
+               ${(sel.link || (sel.cupom && sel.cupom.trim() !== '')) ? `
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem;">
+                    ${sel.link ? `<a href="${sel.link}" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>` : '<div></div>'}
+                    ${(sel.cupom && sel.cupom.trim() !== '' && sel.cupom.trim() !== '-') ? `<span class="cupom-badge">🏷️ CUPOM: ${sel.cupom.trim()}</span>` : ''}
+                  </div>
+                ` : ''}
+                
                 <div class="card-footer">
                   <span style="font-size: 0.8rem; color: var(--text-muted);">Subtotal:</span>
                   ${itemSelecionado 
@@ -710,6 +730,7 @@
         selecoesUsuario[cardKey].ofertaIndex = '';
         selecoesUsuario[cardKey].preco = 0;
         selecoesUsuario[cardKey].link = '';
+        selecoesUsuario[cardKey].cupom = '';
         selecoesUsuario[cardKey].lojaLabel = '';
       } else {
         const ofertas = rawPrecos.filter(p => {
@@ -726,9 +747,11 @@
           selecoesUsuario[cardKey].ofertaIndex = ofertaIdx;
           selecoesUsuario[cardKey].preco = converterPreco(getProp(oferta, ['Preco', 'Valor']));
           selecoesUsuario[cardKey].link = getProp(oferta, ['Link', 'URL']);
+          selecoesUsuario[cardKey].cupom = getProp(oferta, ['Cupom', 'CUPOM', 'Cod_Cupom']);
           selecoesUsuario[cardKey].lojaLabel = `${nomeLoja} ${marca ? `(${marca})` : ''}`;
         }
       }
+      
       aplicarFiltros();
       salvarSessao();
       if (abrirSidebarAuto && ofertaIdx !== '') {
