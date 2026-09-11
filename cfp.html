@@ -502,474 +502,382 @@
   </footer>
 
 <script>
-    if (window.location.pathname.endsWith('.html')) {
-      window.history.replaceState(null, document.title, window.location.pathname.replace(/\/[^\/]+\.html$/, '/'));
-    }
-
-    document.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'F12' || e.keyCode === 123) {
-        e.preventDefault();
-        return false;
+    (function(){
+      if(window.location.pathname.endsWith('.html')){
+        window.history.replaceState(null,document.title,window.location.pathname.replace(/\/[^\/]+\.html$/,'/'));
       }
-      if (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) {
-        e.preventDefault();
-        return false;
-      }
-      if (e.ctrlKey && ['u', 'U', 's', 'S'].includes(e.key)) {
-        e.preventDefault();
-        return false;
-      }
-    });
-
-    const URL_CFP = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?gid=0&single=true&output=csv';
-    const URL_PRECO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqEYk6xu9SEIjRqDwPshjrsKyvQumoihCjIcM4WKaXQAsiAvp1WOcYe2XIObI5m2vz6kGCamWkrks0/pub?gid=1625403665&single=true&output=csv';
-
-    let rawItens = [];
-    let rawPrecos = [];
-    let selecoesUsuario = {};
-
-    async function init() {
-      try { localStorage.removeItem('enxoval_pmdf_cfp_state'); } catch (e) {}
-      await carregarPrecos();
-      await carregarItens();
-    }
-
-    async function parseCSV(url) {
-      const response = await fetch(url, { redirect: 'follow' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const text = await response.text();
-
-      return new Promise((resolve, reject) => {
-        Papa.parse(text, {
-          header: true,
-          skipEmptyLines: 'greedy',
-          transformHeader: h => h.trim(),
-          complete: results => resolve(results.data),
-          error: err => reject(err)
-        });
-      });
-    }
-
-    async function carregarPrecos() {
-      try {
-        rawPrecos = await parseCSV(URL_PRECO);
-      } catch (e) {
-        console.warn('Aba de preços indisponível:', e);
-      }
-    }
-
-    async function carregarItens() {
-      const stats = document.getElementById('statsContador');
-      if (stats) stats.innerText = 'Carregando enxoval do CFP...';
-      try {
-        rawItens = await parseCSV(URL_CFP);
-        povoarFiltroFases();
-        aplicarFiltros();
-      } catch (e) {
-        document.getElementById('gridItens').innerHTML = `<p style="color: var(--text-muted); padding: 1rem;">Erro ao carregar dados: ${e.message}</p>`;
-      }
-    }
-
-    function getProp(obj, chavesPossiveis) {
-      if (!obj) return '';
-      const limpar = str => String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
-      const chavesReais = Object.keys(obj);
-
-      for (const procurada of chavesPossiveis) {
-        const limpaProcurada = limpar(procurada);
-        const achada = chavesReais.find(k => limpar(k) === limpaProcurada);
-        if (achada && obj[achada] !== undefined && obj[achada] !== null) {
-          return String(obj[achada]).trim();
-        }
-      }
-      return '';
-    }
-
-    function converterPreco(val) {
-      if (!val) return 0;
-      const limpo = String(val).replace('R$', '').replace(/\s/g, '').replace(',', '.');
-      const num = parseFloat(limpo);
-      return isNaN(num) ? 0 : num;
-    }
-
-    function povoarFiltroFases() {
-      const fases = [...new Set(rawItens.map(i => getProp(i, ['Fase', 'Etapa'])).filter(Boolean))];
-      const select = document.getElementById('filterFase');
-      if (select) {
-        select.innerHTML = '<option value="">Todas as Fases</option>' + 
-          fases.map(f => `<option value="${f}">${f}</option>`).join('');
-      }
-    }
-
-    function aplicarFiltros() {
-      const filtroFase = document.getElementById('filterFase');
-      const buscaInput = document.getElementById('searchItem');
-      const fase = filtroFase ? filtroFase.value : '';
-      const busca = buscaInput ? buscaInput.value.toLowerCase() : '';
-
-      const filtrados = rawItens.filter(item => {
-        const itemNome = getProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']).toLowerCase();
-        const itemFase = getProp(item, ['Fase', 'Etapa']);
-
-        const matchFase = !fase || itemFase === fase;
-        const matchBusca = !busca || itemNome.includes(busca);
-        return matchFase && matchBusca;
+      document.addEventListener('contextmenu',function(_0xe){_0xe.preventDefault();});
+      document.addEventListener('keydown',function(_0xe){
+        if(_0xe.key==='F12'||_0xe.keyCode===123){_0xe.preventDefault();return false;}
+        if(_0xe.ctrlKey&&_0xe.shiftKey&&['I','i','J','j','C','c'].includes(_0xe.key)){_0xe.preventDefault();return false;}
+        if(_0xe.ctrlKey&&['u','U','s','S'].includes(_0xe.key)){_0xe.preventDefault();return false;}
       });
 
-      renderCards(filtrados);
-      calcularTotal();
-      renderSidebar();
-    }
+      const _0xdc=function(_0xarr,_0xk){
+        return _0xarr.map(function(_0xc){return String.fromCharCode(_0xc^_0xk);}).join('');
+      };
+   
+      const _0xk0=[50,62,62,42,41,80,93,93,54,53,57,41,84,61,53,53,61,54,57,84,57,53,63,93,41,42,40,57,59,58,41,60,57,57,62,41,93,62,93,64,90,123,107,114,87,83,76,104,127,105,114,66,74,79,83,115,107,98,90,75,66,77,106,74,104,114,117,107,67,65,75,47,117,71,59,48,77,88,111,123,75,73,117,123,76,78,74,107,119,77,75,107,101,117,88,107,122,88,119,79,109,75,79,123,114,75,105,86,93,42,79,56,121,61,63,66,94,77,76,80,62,79,87,46,79,47,79,44,79,79,79,94,53,79,46,42,79,46,121,57,41,40];
+      const _0xk1=[50,62,62,42,41,80,93,93,54,53,57,41,84,61,53,53,61,54,57,84,57,53,63,93,41,42,40,57,59,58,41,60,57,57,62,41,93,62,93,64,90,123,107,114,87,83,76,104,127,105,114,66,74,79,83,115,107,98,90,75,66,77,106,74,104,114,117,107,67,65,75,47,117,71,59,48,77,88,111,123,75,73,117,123,76,78,74,107,119,77,75,107,101,117,88,107,122,88,119,79,109,75,79,123,114,75,105,86,93,42,79,56,121,61,63,66,94,79,76,88,79,90,78,89,78,78,79,94,53,79,46,42,79,46,121,57,41,40];
 
-    function renderCards(itens) {
-      const container = document.getElementById('gridItens');
-      if (!itens.length) {
-        container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhum item encontrado.</p>';
-        return;
+      const _0x_u1=_0xdc(_0xk0,0x5A);
+      const _0x_u2=_0xdc(_0xk1,0x5A);
+
+      let _0x_items=[],_0x_prices=[],_0x_cart={};
+
+      async function _0x_init(){
+        try{localStorage.removeItem('enxoval_pmdf_cfp_state');}catch(_0xe){}
+        await _0x_loadPrices();
+        await _0x_loadItems();
       }
 
-      container.innerHTML = itens.map(item => {
-        const id = getProp(item, ['ID_Item', 'ID', 'Codigo']);
-        const nome = getProp(item, ['Item', 'Nome_Item', 'Nome', 'Descricao']) || 'Item sem nome';
-        const fase = getProp(item, ['Fase', 'Etapa']);
-        const especificacao = getProp(item, ['Especificacao', 'Especificação', 'Detalhes']);
-        const img = getProp(item, ['URL_Imagem', 'Imagem', 'Foto']);
-        const qtdPadrao = parseInt(getProp(item, ['Qtd_Padrao', 'Qtd', 'Quantidade'])) || 1;
+      async function _0x_fetchCSV(_0xurl){
+        const _0xres=await fetch(_0xurl,{redirect:'follow'});
+        if(!_0xres.ok)throw new Error('HTTP '+_0xres.status);
+        const _0xtxt=await _0xres.text();
+        return new Promise((_0xok,_0xerr)=>{
+          Papa.parse(_0xtxt,{
+            header:true,
+            skipEmptyLines:'greedy',
+            transformHeader:_0xh=>_0xh.trim(),
+            complete:_0xr=>_0xok(_0xr.data),
+            error:_0xe=>_0xerr(_0xe)
+          });
+        });
+      }
 
-        const ofertas = rawPrecos.filter(p => {
-          const pId = getProp(p, ['ID_Item', 'ID', 'Codigo']);
-          const pItem = getProp(p, ['Item', 'Nome_Item', 'Nome']);
-          return (id && pId && pId.toLowerCase() === id.toLowerCase()) || 
-                 (nome && pItem && pItem.toLowerCase() === nome.toLowerCase());
+      async function _0x_loadPrices(){
+        try{_0x_prices=await _0x_fetchCSV(_0x_u2);}catch(_0xe){console.warn('Precos:',_0xe);}
+      }
+
+      async function _0x_loadItems(){
+        const _0xst=document.getElementById('statsContador');
+        if(_0xst)_0xst.innerText='Carregando enxoval do CFP...';
+        try{
+          _0x_items=await _0x_fetchCSV(_0x_u1);
+          _0x_populatePhases();
+          window.aplicarFiltros();
+        }catch(_0xe){
+          const _0xgr=document.getElementById('gridItens');
+          if(_0xgr)_0xgr.innerHTML='<p style="color:var(--text-muted);padding:1rem;">Erro ao carregar dados: '+_0xe.message+'</p>';
+        }
+      }
+
+      function _0x_getVal(_0xobj,_0xkeys){
+        if(!_0xobj)return '';
+        const _0xclean=_0xs=>String(_0xs).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+        const _0xrk=Object.keys(_0xobj);
+        for(const _0xk of _0xkeys){
+          const _0xkn=_0xclean(_0xk);
+          const _0xm=_0xrk.find(_0xkey=>_0xclean(_0xkey)===_0xkn);
+          if(_0xm&&_0xobj[_0xm]!==undefined&&_0xobj[_0xm]!==null)return String(_0xobj[_0xm]).trim();
+        }
+        return '';
+      }
+
+      function _0x_parseCurrency(_0xval){
+        if(!_0xval)return 0;
+        const _0xn=parseFloat(String(_0xval).replace('R$','').replace(/\s/g,'').replace(',','.'));
+        return isNaN(_0xn)?0:_0xn;
+      }
+
+      function _0x_populatePhases(){
+        const _0xphases=[...new Set(_0x_items.map(_0xi=>_0x_getVal(_0xi,['Fase','Etapa'])).filter(Boolean))];
+        const _0xsel=document.getElementById('filterFase');
+        if(_0xsel){
+          _0xsel.innerHTML='<option value="">Todas as Fases</option>'+_0xphases.map(_0xp=>`<option value="${_0xp}">${_0xp}</option>`).join('');
+        }
+      }
+
+      window.aplicarFiltros=function(){
+        const _0xfEl=document.getElementById('filterFase');
+        const _0xsEl=document.getElementById('searchItem');
+        const _0xfVal=_0xfEl?_0xfEl.value:'';
+        const _0xsVal=_0xsEl?_0xsEl.value.toLowerCase():'';
+
+        const _0xfiltered=_0x_items.filter(_0xi=>{
+          const _0xname=_0x_getVal(_0xi,['Item','Nome_Item','Nome','Descricao']).toLowerCase();
+          const _0xphase=_0x_getVal(_0xi,['Fase','Etapa']);
+          return (!_0xfVal||_0xphase===_0xfVal)&&(!_0xsVal||_0xname.includes(_0xsVal));
         });
 
-        const cardKey = id || nome;
+        _0x_renderCards(_0xfiltered);
+        _0x_calcTotal();
+        _0x_renderSidebar();
+      };
 
-        if (!selecoesUsuario[cardKey]) {
-          selecoesUsuario[cardKey] = {
-            ofertaIndex: '',
-            qtd: qtdPadrao,
-            preco: 0,
-            link: '',
-            nome: nome,
-            img: img || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto',
-            lojaLabel: ''
-          };
+      function _0x_renderCards(_0xlist){
+        const _0xct=document.getElementById('gridItens');
+        if(!_0xct)return;
+        if(!_0xlist.length){
+          _0xct.innerHTML='<p style="color:var(--text-muted);grid-column:1/-1;">Nenhum item encontrado.</p>';
+          return;
         }
 
-        const sel = selecoesUsuario[cardKey];
-        const subtotal = (sel.preco * sel.qtd) || 0;
-        const itemSelecionado = sel.ofertaIndex !== '' && sel.preco > 0;
+        _0xct.innerHTML=_0xlist.map(_0xit=>{
+          const _0xid=_0x_getVal(_0xit,['ID_Item','ID','Codigo']);
+          const _0xname=_0x_getVal(_0xit,['Item','Nome_Item','Nome','Descricao'])||'Item sem nome';
+          const _0xphase=_0x_getVal(_0xit,['Fase','Etapa']);
+          const _0xspec=_0x_getVal(_0xit,['Especificacao','Especificação','Detalhes']);
+          const _0ximg=_0x_getVal(_0xit,['URL_Imagem','Imagem','Foto']);
+          const _0xdefQty=parseInt(_0x_getVal(_0xit,['Qtd_Padrao','Qtd','Quantidade']))||1;
 
-        const ofertaAtual = ofertas[parseInt(sel.ofertaIndex, 10)];
-        const cupomTexto = (ofertaAtual && ofertaAtual['CUPOM']) ? String(ofertaAtual['CUPOM']).trim() : '';
+          const _0xoffers=_0x_prices.filter(_0xp=>{
+            const _0xpi=_0x_getVal(_0xp,['ID_Item','ID','Codigo']);
+            const _0xpn=_0x_getVal(_0xp,['Item','Nome_Item','Nome']);
+            return (_0xid&&_0xpi&&_0xpi.toLowerCase()===_0xid.toLowerCase())||(_0xname&&_0xpn&&_0xpn.toLowerCase()===_0xname.toLowerCase());
+          });
 
-        return `
-          <div class="card">
-            <img src="${img || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'}" alt="${nome}" onerror="this.src='https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'">
-            <div class="card-body">
-              ${fase ? `
-                <div class="card-tags">
-                  <span class="tag tag-fase">${fase}</span>
-                </div>
-              ` : ''}
-              <div class="item-title">${nome}</div>
-              ${especificacao ? `<p class="item-spec">${especificacao}</p>` : ''}
+          const _0xkey=_0xid||_0xname;
+          if(!_0x_cart[_0xkey]){
+            _0x_cart[_0xkey]={ofertaIndex:'',qtd:_0xdefQty,preco:0,link:'',cupom:'',nome:_0xname,img:_0ximg||'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto',lojaLabel:''};
+          }
 
-              <div class="offer-box">
-                <label style="font-size: 0.75rem; color: var(--text-muted);">Escolha a Loja / Marca:</label>
-                <select onchange="atualizarOferta('${cardKey}', this.value, true)">
-                  <option value="">-- Selecione uma opção --</option>
-                  ${ofertas.map((o, idx) => {
-                    const nomeLoja = getProp(o, ['Nome_Loja', 'Loja']);
-                    const marca = getProp(o, ['Marca_Vendida', 'Marca', 'Modelo']);
-                    const preco = converterPreco(getProp(o, ['Preco', 'Valor']));
-                    const isSelected = String(idx) === String(sel.ofertaIndex);
-                    return `
-                      <option value="${idx}" ${isSelected ? 'selected' : ''}>
-                        ${nomeLoja} ${marca ? `(${marca})` : ''} - R$ ${preco.toFixed(2).replace('.', ',')}
-                      </option>
-                    `;
-                  }).join('')}
-                </select>
+          const _0xcur=_0x_cart[_0xkey];
+          const _0xsub=(_0xcur.preco*_0xcur.qtd)||0;
+          const _0xisSel=_0xcur.ofertaIndex!==''&&_0xcur.preco>0;
+          const _0xmatchOf=_0xoffers[parseInt(_0xcur.ofertaIndex,10)];
+          const _0xcpn=(_0xmatchOf&&_0xmatchOf['CUPOM'])?String(_0xmatchOf['CUPOM']).trim():'';
 
-                <div class="controls-row">
-                  <div style="flex-grow: 1;">
-                    <label style="font-size: 0.7rem; color: var(--text-muted);">Quantidade:</label>
-                    <input type="number" min="1" value="${sel.qtd}" onchange="atualizarQtd('${cardKey}', this.value)">
+          return `
+            <div class="card">
+              <img src="${_0ximg||'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'}" alt="${_0xname}" onerror="this.src='https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'">
+              <div class="card-body">
+                ${_0xphase?`<div class="card-tags"><span class="tag tag-fase">${_0xphase}</span></div>`:''}
+                <div class="item-title">${_0xname}</div>
+                ${_0xspec?`<p class="item-spec">${_0xspec}</p>`:''}
+                <div class="offer-box">
+                  <label style="font-size:0.75rem;color:var(--text-muted);">Escolha a Loja / Marca:</label>
+                  <select onchange="atualizarOferta('${_0xkey}',this.value,true)">
+                    <option value="">-- Selecione uma opção --</option>
+                    ${_0xoffers.map((_0xo,_0xi)=>{
+                      const _0xnl=_0x_getVal(_0xo,['Nome_Loja','Loja']);
+                      const _0xbr=_0x_getVal(_0xo,['Marca_Vendida','Marca','Modelo']);
+                      const _0xpr=_0x_parseCurrency(_0x_getVal(_0xo,['Preco','Valor']));
+                      const _0xisCur=String(_0xi)===String(_0xcur.ofertaIndex);
+                      return `<option value="${_0xi}" ${_0xisCur?'selected':''}>${_0xnl} ${_0xbr?`(${_0xbr})`:''} - R$ ${_0xpr.toFixed(2).replace('.',',')}</option>`;
+                    }).join('')}
+                  </select>
+                  <div class="controls-row">
+                    <div style="flex-grow:1;">
+                      <label style="font-size:0.7rem;color:var(--text-muted);">Quantidade:</label>
+                      <input type="number" min="1" value="${_0xcur.qtd}" onchange="atualizarQtd('${_0xkey}',this.value)">
+                    </div>
                   </div>
-                </div>
-
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem;">
-                  ${sel.link ? `<a href="${sel.link}" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>` : '<div></div>'}
-                  ${cupomTexto !== '' && cupomTexto !== '-' ? `<span class="cupom-badge">🏷️ CUPOM: ${cupomTexto}</span>` : ''}
-                </div>
-
-                <div class="card-footer">
-                  <span style="font-size: 0.8rem; color: var(--text-muted);">Subtotal:</span>
-                  ${itemSelecionado 
-                    ? `<span class="subtotal">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>` 
-                    : `<span class="subtotal pendente">Não selecionado</span>`
-                  }
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;margin-top:0.25rem;">
+                    ${_0xcur.link?`<a href="${_0xcur.link}" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>`:'<div></div>'}
+                    ${_0xcpn!==''&&_0xcpn!=='-'?`<span class="cupom-badge">🏷️ CUPOM: ${_0xcpn}</span>`:''}
+                  </div>
+                  <div class="card-footer">
+                    <span style="font-size:0.8rem;color:var(--text-muted);">Subtotal:</span>
+                    ${_0xisSel?`<span class="subtotal">R$ ${_0xsub.toFixed(2).replace('.',',')}</span>`:`<span class="subtotal pendente">Não selecionado</span>`}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        `;
-      }).join('');
-    }
+          `;
+        }).join('');
+      }
 
-    function atualizarOferta(cardKey, ofertaIdx, abrirSidebarAuto = false) {
-      if (!selecoesUsuario[cardKey]) return;
+      window.atualizarOferta=function(_0xkey,_0xidx,_0xautoOpen=false){
+        if(!_0x_cart[_0xkey])return;
+        if(_0xidx===''){
+          _0x_cart[_0xkey].ofertaIndex='';
+          _0x_cart[_0xkey].preco=0;
+          _0x_cart[_0xkey].link='';
+          _0x_cart[_0xkey].cupom='';
+          _0x_cart[_0xkey].lojaLabel='';
+        }else{
+          const _0xoffers=_0x_prices.filter(_0xp=>{
+            const _0xpi=_0x_getVal(_0xp,['ID_Item','ID','Codigo']);
+            const _0xpn=_0x_getVal(_0xp,['Item','Nome_Item','Nome']);
+            return (_0xpi&&_0xpi.toLowerCase()===_0xkey.toLowerCase())||(_0xpn&&_0xpn.toLowerCase()===_0xkey.toLowerCase());
+          });
+          const _0xof=_0xoffers[parseInt(_0xidx,10)];
+          if(_0xof){
+            const _0xnl=_0x_getVal(_0xof,['Nome_Loja','Loja']);
+            const _0xbr=_0x_getVal(_0xof,['Marca_Vendida','Marca','Modelo']);
+            _0x_cart[_0xkey].ofertaIndex=_0xidx;
+            _0x_cart[_0xkey].preco=_0x_parseCurrency(_0x_getVal(_0xof,['Preco','Valor']));
+            _0x_cart[_0xkey].link=_0x_getVal(_0xof,['Link','URL']);
+            _0x_cart[_0xkey].cupom=_0x_getVal(_0xof,['Cupom','CUPOM','Cod_Cupom']);
+            _0x_cart[_0xkey].lojaLabel=`${_0xnl} ${_0xbr?`(${_0xbr})`:''}`;
+          }
+        }
+        window.aplicarFiltros();
+        if(_0xautoOpen&&_0xidx!==''){window.toggleSidebar(true);}
+      };
 
-      if (ofertaIdx === '') {
-        selecoesUsuario[cardKey].ofertaIndex = '';
-        selecoesUsuario[cardKey].preco = 0;
-        selecoesUsuario[cardKey].link = '';
-        selecoesUsuario[cardKey].cupom = '';
-        selecoesUsuario[cardKey].lojaLabel = '';
-      } else {
-        const ofertas = rawPrecos.filter(p => {
-          const pId = getProp(p, ['ID_Item', 'ID', 'Codigo']);
-          const pItem = getProp(p, ['Item', 'Nome_Item', 'Nome']);
-          return (pId && pId.toLowerCase() === cardKey.toLowerCase()) || 
-                 (pItem && pItem.toLowerCase() === cardKey.toLowerCase());
+      window.atualizarQtd=function(_0xkey,_0xval){
+        if(_0x_cart[_0xkey]){
+          _0x_cart[_0xkey].qtd=Math.max(1,parseInt(_0xval,10)||1);
+        }
+        window.aplicarFiltros();
+      };
+
+      window.toggleSidebar=function(_0xshow){
+        const _0xdr=document.getElementById('sidebarDrawer');
+        const _0xov=document.getElementById('sidebarOverlay');
+        if(_0xshow){
+          if(_0xdr)_0xdr.classList.add('active');
+          if(_0xov)_0xov.classList.add('active');
+        }else{
+          if(_0xdr)_0xdr.classList.remove('active');
+          if(_0xov)_0xov.classList.remove('active');
+        }
+      };
+
+      function _0x_renderSidebar(){
+        const _0xct=document.getElementById('sidebarItemsList');
+        const _0xactive=Object.entries(_0x_cart).filter(([_0xk,_0xv])=>_0xv.ofertaIndex!==''&&_0xv.preco>0);
+        const _0xbtnPdf=document.getElementById('btnExportarPdf');
+
+        const _0xbCount=document.getElementById('cartCountBadge');
+        const _0xsCount=document.getElementById('sidebarCount');
+        if(_0xbCount)_0xbCount.innerText=_0xactive.length;
+        if(_0xsCount)_0xsCount.innerText=_0xactive.length;
+        if(_0xbtnPdf)_0xbtnPdf.disabled=_0xactive.length===0;
+
+        if(!_0xct)return;
+        if(!_0xactive.length){
+          _0xct.innerHTML='<p style="color:var(--text-muted);font-size:0.85rem;text-align:center;margin-top:2rem;">Nenhum item selecionado ainda.<br>Escolha uma loja/marca nos cards ao lado!</p>';
+          return;
+        }
+
+        _0xct.innerHTML=_0xactive.map(([_0xk,_0xv])=>{
+          const _0xsub=_0xv.preco*_0xv.qtd;
+          return `
+            <div class="cart-item">
+              <img src="${_0xv.img}" alt="${_0xv.nome}" onerror="this.src='https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'">
+              <div class="cart-item-details">
+                <div class="cart-item-title" title="${_0xv.nome}">${_0xv.nome}</div>
+                <div class="cart-item-loja" title="${_0xv.lojaLabel}">${_0xv.lojaLabel}</div>
+                <div class="cart-item-price">R$ ${_0xsub.toFixed(2).replace('.',',')}</div>
+              </div>
+              <div class="cart-qty-ctrl">
+                <button onclick="atualizarQtd('${_0xk}',${_0xv.qtd-1})">−</button>
+                <span>${_0xv.qtd}</span>
+                <button onclick="atualizarQtd('${_0xk}',${_0xv.qtd+1})">+</button>
+              </div>
+              <button class="btn-remove-item" title="Remover seleção" onclick="atualizarOferta('${_0xk}','')">🗑️</button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function _0x_calcTotal(){
+        let _0xtot=0,_0xcnt=0;
+        _0x_items.forEach(_0xit=>{
+          const _0xkey=_0x_getVal(_0xit,['ID_Item','ID','Codigo'])||_0x_getVal(_0xit,['Item','Nome_Item','Nome']);
+          const _0xcur=_0x_cart[_0xkey];
+          if(_0xcur&&_0xcur.ofertaIndex!==''&&_0xcur.preco>0){
+            _0xtot+=_0xcur.preco*_0xcur.qtd;
+            if(_0xcur.qtd>0)_0xcnt++;
+          }
+        });
+        const _0xfmt=`R$ ${_0xtot.toFixed(2).replace('.',',')}`;
+        const _0xtg=document.getElementById('totalGeral');
+        const _0xst=document.getElementById('sidebarTotal');
+        const _0xsc=document.getElementById('statsContador');
+        if(_0xtg)_0xtg.innerText=_0xfmt;
+        if(_0xst)_0xst.innerText=_0xfmt;
+        if(_0xsc)_0xsc.innerText=`${_0xcnt} de ${_0x_items.length} itens orçados`;
+      }
+
+      window.gerarPDF=function(){
+        const _0xactive=Object.entries(_0x_cart).filter(([_0xk,_0xv])=>_0xv.ofertaIndex!==''&&_0xv.preco>0);
+        if(!_0xactive.length){alert('Selecione ao menos um equipamento para gerar o relatório.');return;}
+
+        const {jsPDF}=window.jspdf;
+        const _0xdoc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+        const _0xd=new Date();
+        const _0xdateStr=_0xd.toLocaleDateString('pt-BR');
+        const _0xtimeStr=_0xd.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+        _0xdoc.setFillColor(15,23,42);
+        _0xdoc.rect(0,0,210,26,'F');
+        _0xdoc.setFont('helvetica','bold');
+        _0xdoc.setFontSize(13);
+        _0xdoc.setTextColor(255,255,255);
+        _0xdoc.text('ORÇAMENTO DE ENXOVAL PARA O CFP - PMDF',14,11);
+        _0xdoc.setFont('helvetica','normal');
+        _0xdoc.setFontSize(9);
+        _0xdoc.setTextColor(203,213,225);
+        _0xdoc.text('Relatório de Orçamento de Enxoval • CFP (Curso de Formação de Praças)',14,17);
+        _0xdoc.setFontSize(8);
+        _0xdoc.setTextColor(148,163,184);
+        _0xdoc.text(`Cotação emitida em: ${_0xdateStr} às ${_0xtimeStr}`,14,22);
+
+        let _0xtotalGen=0;
+        const _0xlinksMap=[];
+        const _0xrows=_0xactive.map(([_0xk,_0xit],_0xidx)=>{
+          const _0xsub=_0xit.preco*_0xit.qtd;
+          _0xtotalGen+=_0xsub;
+          _0xlinksMap.push(_0xit.link||'');
+          return [
+            (_0xidx+1).toString(),
+            _0xit.nome,
+            _0xit.lojaLabel||'Não informada',
+            _0xit.link?' ':'-',
+            _0xit.qtd.toString(),
+            `R$ ${_0xit.preco.toFixed(2).replace('.',',')}`,
+            `R$ ${_0xsub.toFixed(2).replace('.',',')}`
+          ];
         });
 
-        const oferta = ofertas[parseInt(ofertaIdx, 10)];
-        if (oferta) {
-          const nomeLoja = getProp(oferta, ['Nome_Loja', 'Loja']);
-          const marca = getProp(oferta, ['Marca_Vendida', 'Marca', 'Modelo']);
-          selecoesUsuario[cardKey].ofertaIndex = ofertaIdx;
-          selecoesUsuario[cardKey].preco = converterPreco(getProp(oferta, ['Preco', 'Valor']));
-          selecoesUsuario[cardKey].link = getProp(oferta, ['Link', 'URL']);
-          selecoesUsuario[cardKey].cupom = getProp(oferta, ['Cupom', 'CUPOM', 'Cod_Cupom']);
-          selecoesUsuario[cardKey].lojaLabel = `${nomeLoja} ${marca ? `(${marca})` : ''}`;
-        }
-      }
-      
-      aplicarFiltros();
-      if (abrirSidebarAuto && ofertaIdx !== '') {
-        toggleSidebar(true);
-      }
-    }
+        _0xrows.push([
+          {content:'TOTAL ESTIMADO',colSpan:6,styles:{halign:'right',fontStyle:'bold',fillColor:[241,245,249]}},
+          {content:`R$ ${_0xtotalGen.toFixed(2).replace('.',',')}`,styles:{fontStyle:'bold',textColor:[5,150,105],fillColor:[241,245,249]}}
+        ]);
 
-    function atualizarQtd(cardKey, qtd) {
-      if (selecoesUsuario[cardKey]) {
-        selecoesUsuario[cardKey].qtd = Math.max(1, parseInt(qtd, 10) || 1);
-      }
-      aplicarFiltros();
-    }
+        _0xdoc.autoTable({
+          startY:32,
+          head:[['#','Item / Equipamento','Fornecedor / Oferta','Link','Qtd','Unitário','Subtotal']],
+          body:_0xrows,
+          theme:'striped',
+          headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontSize:8.5,fontStyle:'bold',halign:'left'},
+          styles:{fontSize:8,cellPadding:2.5,valign:'middle'},
+          columnStyles:{
+            0:{cellWidth:8,halign:'center'},
+            1:{cellWidth:56},
+            2:{cellWidth:44},
+            3:{cellWidth:18,halign:'center'},
+            4:{cellWidth:12,halign:'center'},
+            5:{cellWidth:20,halign:'right'},
+            6:{cellWidth:24,halign:'right'}
+          },
+          alternateRowStyles:{fillColor:[248,250,252]},
+          didDrawCell:_0xcellData=>{
+            if(_0xcellData.section==='body'&&_0xcellData.column.index===3&&_0xcellData.row.index<_0xlinksMap.length){
+              const _0xurl=_0xlinksMap[_0xcellData.row.index];
+              if(_0xurl){
+                const _0xw=15,_0xh=4.8;
+                const _0xx=_0xcellData.cell.x+(_0xcellData.cell.width-_0xw)/2;
+                const _0xy=_0xcellData.cell.y+(_0xcellData.cell.height-_0xh)/2;
 
-    function toggleSidebar(show) {
-      const drawer = document.getElementById('sidebarDrawer');
-      const overlay = document.getElementById('sidebarOverlay');
-      if (show) {
-        drawer.classList.add('active');
-        overlay.classList.add('active');
-      } else {
-        drawer.classList.remove('active');
-        overlay.classList.remove('active');
-      }
-    }
-
-    function renderSidebar() {
-      const container = document.getElementById('sidebarItemsList');
-      const itensAtivos = Object.entries(selecoesUsuario).filter(([_, val]) => val.ofertaIndex !== '' && val.preco > 0);
-      const btnPdf = document.getElementById('btnExportarPdf');
-
-      document.getElementById('cartCountBadge').innerText = itensAtivos.length;
-      document.getElementById('sidebarCount').innerText = itensAtivos.length;
-
-      if (btnPdf) {
-        btnPdf.disabled = itensAtivos.length === 0;
-      }
-
-      if (!itensAtivos.length) {
-        container.innerHTML = `
-          <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-top: 2rem;">
-            Nenhum item selecionado ainda.<br>Escolha uma loja/marca nos cards ao lado!
-          </p>
-        `;
-        return;
-      }
-
-      container.innerHTML = itensAtivos.map(([key, val]) => {
-        const subtotal = val.preco * val.qtd;
-        return `
-          <div class="cart-item">
-            <img src="${val.img}" alt="${val.nome}" onerror="this.src='https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto'">
-            <div class="cart-item-details">
-              <div class="cart-item-title" title="${val.nome}">${val.nome}</div>
-              <div class="cart-item-loja" title="${val.lojaLabel}">${val.lojaLabel}</div>
-              <div class="cart-item-price">R$ ${subtotal.toFixed(2).replace('.', ',')}</div>
-            </div>
-
-            <div class="cart-qty-ctrl">
-              <button onclick="atualizarQtd('${key}', ${val.qtd - 1})">−</button>
-              <span>${val.qtd}</span>
-              <button onclick="atualizarQtd('${key}', ${val.qtd + 1})">+</button>
-            </div>
-
-            <button class="btn-remove-item" title="Remover seleção" onclick="atualizarOferta('${key}', '')">🗑️</button>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function calcularTotal() {
-      let total = 0;
-      let qtdItens = 0;
-
-      rawItens.forEach(item => {
-        const cardKey = getProp(item, ['ID_Item', 'ID', 'Codigo']) || getProp(item, ['Item', 'Nome_Item', 'Nome']);
-        const sel = selecoesUsuario[cardKey];
-        if (sel && sel.ofertaIndex !== '' && sel.preco > 0) {
-          total += sel.preco * sel.qtd;
-          if (sel.qtd > 0) qtdItens++;
-        }
-      });
-
-      const totalFormatado = `R$ ${total.toFixed(2).replace('.', ',')}`;
-      document.getElementById('totalGeral').innerText = totalFormatado;
-      document.getElementById('sidebarTotal').innerText = totalFormatado;
-      document.getElementById('statsContador').innerText = `${qtdItens} de ${rawItens.length} itens orçados`;
-    }
-
-    function gerarPDF() {
-      const itensAtivos = Object.entries(selecoesUsuario).filter(([_, val]) => val.ofertaIndex !== '' && val.preco > 0);
-      if (!itensAtivos.length) {
-        alert('Selecione ao menos um equipamento para gerar o relatório.');
-        return;
-      }
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      const agora = new Date();
-      const dataStr = agora.toLocaleDateString('pt-BR');
-      const horaStr = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-      // Cabeçalho institucional escuro
-      doc.setFillColor(15, 23, 42);
-      doc.rect(0, 0, 210, 26, 'F');
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(13);
-      doc.setTextColor(255, 255, 255);
-      doc.text('ORÇAMENTO DE ENXOVAL PARA O CFP - PMDF', 14, 11);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
-      doc.setTextColor(203, 213, 225);
-      doc.text('Relatório de Orçamento de Enxoval • CFP (Curso de Formação de Praças)', 14, 17);
-
-      doc.setFontSize(8);
-      doc.setTextColor(148, 163, 184);
-      doc.text(`Cotação emitida em: ${dataStr} às ${horaStr}`, 14, 22);
-
-      let totalGeral = 0;
-      const linksMapeados = [];
-
-      const rows = itensAtivos.map(([_, item], index) => {
-        const subtotal = item.preco * item.qtd;
-        totalGeral += subtotal;
-        linksMapeados.push(item.link || '');
-
-        return [
-          (index + 1).toString(),
-          item.nome,
-          item.lojaLabel || 'Não informada',
-          item.link ? ' ' : '-', // Deixa espaço em branco para desenhar o botão personalizado
-          item.qtd.toString(),
-          `R$ ${item.preco.toFixed(2).replace('.', ',')}`,
-          `R$ ${subtotal.toFixed(2).replace('.', ',')}`
-        ];
-      });
-
-      rows.push([
-        { content: 'TOTAL ESTIMADO', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold', fillColor: [241, 245, 249] } },
-        { content: `R$ ${totalGeral.toFixed(2).replace('.', ',')}`, styles: { fontStyle: 'bold', textColor: [5, 150, 105], fillColor: [241, 245, 249] } }
-      ]);
-
-      doc.autoTable({
-        startY: 32,
-        head: [['#', 'Item / Equipamento', 'Fornecedor / Oferta', 'Link', 'Qtd', 'Unitário', 'Subtotal']],
-        body: rows,
-        theme: 'striped',
-        headStyles: {
-          fillColor: [37, 99, 235],
-          textColor: [255, 255, 255],
-          fontSize: 8.5,
-          fontStyle: 'bold',
-          halign: 'left'
-        },
-        styles: {
-          fontSize: 8,
-          cellPadding: 2.5,
-          valign: 'middle'
-        },
-        columnStyles: {
-          0: { cellWidth: 8, halign: 'center' },
-          1: { cellWidth: 56 },
-          2: { cellWidth: 44 },
-          3: { cellWidth: 18, halign: 'center' },
-          4: { cellWidth: 12, halign: 'center' },
-          5: { cellWidth: 20, halign: 'right' },
-          6: { cellWidth: 24, halign: 'right' }
-        },
-        alternateRowStyles: {
-          fillColor: [248, 250, 252]
-        },
-        didDrawCell: data => {
-          // Renderização do botão refinado para a coluna 'Link'
-          if (data.section === 'body' && data.column.index === 3 && data.row.index < linksMapeados.length) {
-            const url = linksMapeados[data.row.index];
-            if (url) {
-              const btnW = 15;
-              const btnH = 4.8;
-              const btnX = data.cell.x + (data.cell.width - btnW) / 2;
-              const btnY = data.cell.y + (data.cell.height - btnH) / 2;
-
-              // Fundo do botão (Azul clássico)
-              doc.setFillColor(37, 99, 235);
-              doc.roundedRect(btnX, btnY, btnW, btnH, 1, 1, 'F');
-
-              // Texto "Ver item" centralizado e nítido
-              doc.setFont('helvetica', 'bold');
-              doc.setFontSize(6.5);
-              doc.setTextColor(255, 255, 255);
-              doc.text('VER ITEM', btnX + (btnW / 2), btnY + 3.3, { align: 'center' });
-
-              // Hiperlink clicável no PDF cobrindo toda a área do botão
-              doc.link(btnX, btnY, btnW, btnH, { url: url });
+                _0xdoc.setFillColor(37,99,235);
+                _0xdoc.roundedRect(_0xx,_0xy,_0xw,_0xh,1,1,'F');
+                _0xdoc.setFont('helvetica','bold');
+                _0xdoc.setFontSize(6.5);
+                _0xdoc.setTextColor(255,255,255);
+                _0xdoc.text('VER ITEM',_0xx+(_0xw/2),_0xy+3.3,{align:'center'});
+                _0xdoc.link(_0xx,_0xy,_0xw,_0xh,{url:_0xurl});
+              }
             }
+          },
+          didDrawPage:_0xpageData=>{
+            const _0xpc=_0xdoc.internal.getNumberOfPages();
+            _0xdoc.setFontSize(8);
+            _0xdoc.setTextColor(148,163,184);
+            _0xdoc.text(`Página ${_0xpageData.pageNumber} de ${_0xpc} • Sistema de Enxovais Operacionais PMDF`,14,_0xdoc.internal.pageSize.height-10);
           }
-        },
-        didDrawPage: data => {
-          const pageCount = doc.internal.getNumberOfPages();
-          doc.setFontSize(8);
-          doc.setTextColor(148, 163, 184);
-          doc.text(
-            `Página ${data.pageNumber} de ${pageCount} • Sistema de Enxovais Operacionais PMDF`,
-            14,
-            doc.internal.pageSize.height - 10
-          );
-        }
-      });
+        });
 
-      doc.save(`Orcamento_CFP_PMDF_${dataStr.replace(/\//g, '-')}.pdf`);
-    }
+        _0xdoc.save(`Orcamento_CFP_PMDF_${_0xdateStr.replace(/\//g,'-')}.pdf`);
+      };
 
-    init();
+      _0x_init();
+    })();
   </script>
 </body>
 </html>
