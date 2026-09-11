@@ -503,105 +503,82 @@
 
 <script>
     (function(){
-      if(window.location.pathname.endsWith('.html')){
-        window.history.replaceState(null,document.title,window.location.pathname.replace(/\/[^\/]+\.html$/,'/'));
+      if (window.location.pathname.endsWith('.html')) {
+        window.history.replaceState(null, document.title, window.location.pathname.replace(/\/[^\/]+\.html$/, '/'));
       }
-      document.addEventListener('contextmenu',function(_0xe){_0xe.preventDefault();});
-      document.addEventListener('keydown',function(_0xe){
-        if(_0xe.key==='F12'||_0xe.keyCode===123){_0xe.preventDefault();return false;}
-        if(_0xe.ctrlKey&&_0xe.shiftKey&&['I','i','J','j','C','c'].includes(_0xe.key)){_0xe.preventDefault();return false;}
-        if(_0xe.ctrlKey&&['u','U','s','S'].includes(_0xe.key)){_0xe.preventDefault();return false;}
+      document.addEventListener('contextmenu', function(_0xe){ _0xe.preventDefault(); });
+      document.addEventListener('keydown', function(_0xe){
+        if (_0xe.key === 'F12' || _0xe.keyCode === 123) { _0xe.preventDefault(); return false; }
+        if (_0xe.ctrlKey && _0xe.shiftKey && ['I','i','J','j','C','c'].includes(_0xe.key)) { _0xe.preventDefault(); return false; }
+        if (_0xe.ctrlKey && ['u','U','s','S'].includes(_0xe.key)) { _0xe.preventDefault(); return false; }
       });
 
-      // Decodificador seguro de URLs ofuscadas em hexadecimal puro
       function _0xdh(_0xhx){
-        var _0xs='';
-        for(var _0xi=0;_0xi<_0xhx.length;_0xi+=2){
-          _0xs+=String.fromCharCode(parseInt(_0xhx.substr(_0xi,2),16));
+        var _0xs = '';
+        for (var _0xi = 0; _0xi < _0xhx.length; _0xi += 2) {
+          _0xs += String.fromCharCode(parseInt(_0xhx.substr(_0xi, 2), 16));
         }
         return _0xs;
       }
 
-      // URLs das planilhas 100% ofuscadas (sem texto legível no GitHub ou no inspecionar)
-      var _0xuA=_0xdh('68747470733a2f2f646f63732e676f6f676c652e636f6d2f7370726561647368656574732f642f652f32504143582d3176527145596b367875395345496a527144775073686a72734b797651756d6f6968436a49634d34574b61585141736941767031574f6359653258494f6249356d32767a366b4743616d576b726b73302f7075623f6769643d302673696e676c653d74727565266f75747075743d637376');
-      var _0xuB=_0xdh('68747470733a2f2f646f63732e676f6f676c652e636f6d2f7370726561647368656574732f642f652f32504143582d3176527145596b367875395345496a527144775073686a72734b797651756d6f6968436a49634d34574b61585141736941767031574f6359653258494f6249356d32767a366b4743616d576b726b73302f7075623f6769643d313632353430333636352673696e676c653d74727565266f75747075743d637376');
+      var _0xuA = _0xdh('68747470733a2f2f646f63732e676f6f676c652e636f6d2f7370726561647368656574732f642f652f32504143582d3176527145596b367875395345496a527144775073686a72734b797651756d6f6968436a49634d34574b61585141736941767031574f6359653258494f6249356d32767a366b4743616d576b726b73302f7075623f6769643d302673696e676c653d74727565266f75747075743d637376');
+      var _0xuB = _0xdh('68747470733a2f2f646f63732e676f6f676c652e636f6d2f7370726561647368656574732f642f652f32504143582d3176527145596b367875395345496a527144775073686a72734b797651756d6f6968436a49634d34574b61585141736941767031574f6359653258494f6249356d32767a366b4743616d576b726b73302f7075623f6769643d313632353430333636352673696e676c653d74727565266f75747075743d637376');
 
-      var _0xrI=[],_0xrP=[],_0xsU={};
-
-      async function init(){
-        try{localStorage.removeItem('enxoval_pmdf_cfp_state');}catch(_0xe){}
-        await _0xcP();
-        await _0xcI();
-      }
+      var _0xrI = [];
+      var _0xrP = [];
+      var _0xsU = {};
 
       async function _0xpS(_0xurl){
-        var _0xres=await fetch(_0xurl);
-        if(!_0xres.ok)throw new Error('HTTP '+_0xres.status);
-        var _0xtxt=await _0xres.text();
-        return new Promise(function(_0xok,_0xno){
-          Papa.parse(_0xtxt,{
-            header:true,
-            skipEmptyLines:'greedy',
-            transformHeader:function(_0xh){return _0xh.trim();},
-            complete:function(_0xr){_0xok(_0xr.data);},
-            error:function(_0xe){_0xno(_0xe);}
+        var _0xres = await fetch(_0xurl, { redirect: 'follow' });
+        if (!_0xres.ok) throw new Error('HTTP ' + _0xres.status);
+        var _0xtxt = await _0xres.text();
+        return new Promise(function(_0xok, _0xno){
+          Papa.parse(_0xtxt, {
+            header: true,
+            skipEmptyLines: 'greedy',
+            transformHeader: function(_0xh){ return _0xh.trim(); },
+            complete: function(_0xr){ _0xok(_0xr.data); },
+            error: function(_0xe){ _0xno(_0xe); }
           });
         });
       }
 
-      async function _0xcP(){
-        try{_0xrP=await _0xpS(_0xuB);}catch(_0xe){console.warn('Precos:',_0xe);}
-      }
-
-      async function _0xcI(){
-        var _0xst=document.getElementById('statsContador');
-        if(_0xst)_0xst.innerText='Carregando enxoval do CFP...';
-        try{
-          _0xrI=await _0xpS(_0xuA);
-          _0xpF();
-          window.aplicarFiltros();
-        }catch(_0xe){
-          var _0xg=document.getElementById('gridItens');
-          if(_0xg)_0xg.innerHTML='<p style="color:var(--text-muted);padding:1rem;">Erro ao carregar dados: '+_0xe.message+'</p>';
-        }
-      }
-
-      function _0xgP(_0xo,_0xk){
-        if(!_0xo)return '';
-        var _0xcl=function(_0xs){return String(_0xs).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');};
-        var _0xrK=Object.keys(_0xo);
-        for(var _0xi=0;_0xi<_0xk.length;_0xi++){
-          var _0xkn=_0xcl(_0xk[_0xi]);
-          var _0xm=_0xrK.find(function(_0xrk){return _0xcl(_0xrk)===_0xkn;});
-          if(_0xm&&_0xo[_0xm]!==undefined&&_0xo[_0xm]!==null)return String(_0xo[_0xm]).trim();
+      function _0xgP(_0xo, _0xk){
+        if (!_0xo) return '';
+        var _0xcl = function(_0xs){ return String(_0xs).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ''); };
+        var _0xrK = Object.keys(_0xo);
+        for (var _0xi = 0; _0xi < _0xk.length; _0xi++) {
+          var _0xkn = _0xcl(_0xk[_0xi]);
+          var _0xm = _0xrK.find(function(_0xrk){ return _0xcl(_0xrk) === _0xkn; });
+          if (_0xm && _0xo[_0xm] !== undefined && _0xo[_0xm] !== null) return String(_0xo[_0xm]).trim();
         }
         return '';
       }
 
       function _0xcV(_0xv){
-        if(!_0xv)return 0;
-        var _0xn=parseFloat(String(_0xv).replace('R$','').replace(/\s/g,'').replace(',','.'));
-        return isNaN(_0xn)?0:_0xn;
+        if (!_0xv) return 0;
+        var _0xn = parseFloat(String(_0xv).replace('R$', '').replace(/\s/g, '').replace(',', '.'));
+        return isNaN(_0xn) ? 0 : _0xn;
       }
 
       function _0xpF(){
-        var _0xfs=[...new Set(_0xrI.map(function(_0xi){return _0xgP(_0xi,['Fase','Etapa']);}).filter(Boolean))];
-        var _0xsel=document.getElementById('filterFase');
-        if(_0xsel){
-          _0xsel.innerHTML='<option value="">Todas as Fases</option>'+_0xfs.map(function(_0xf){return '<option value="'+_0xf+'">'+_0xf+'</option>';}).join('');
+        var _0xfs = [...new Set(_0xrI.map(function(_0xi){ return _0xgP(_0xi, ['Fase', 'Etapa']); }).filter(Boolean))];
+        var _0xsel = document.getElementById('filterFase');
+        if (_0xsel) {
+          _0xsel.innerHTML = '<option value="">Todas as Fases</option>' + _0xfs.map(function(_0xf){ return '<option value="' + _0xf + '">' + _0xf + '</option>'; }).join('');
         }
       }
 
-      window.aplicarFiltros=function(){
-        var _0xfEl=document.getElementById('filterFase');
-        var _0xsEl=document.getElementById('searchItem');
-        var _0xfV=_0xfEl?_0xfEl.value:'';
-        var _0xsV=_0xsEl?_0xsEl.value.toLowerCase():'';
+      window.aplicarFiltros = function(){
+        var _0xfEl = document.getElementById('filterFase');
+        var _0xsEl = document.getElementById('searchItem');
+        var _0xfV = _0xfEl ? _0xfEl.value : '';
+        var _0xsV = _0xsEl ? _0xsEl.value.toLowerCase() : '';
 
-        var _0xfl=_0xrI.filter(function(_0xi){
-          var _0xn=_0xgP(_0xi,['Item','Nome_Item','Nome','Descricao']).toLowerCase();
-          var _0xfa=_0xgP(_0xi,['Fase','Etapa']);
-          return (!_0xfV||_0xfa===_0xfV)&&(!_0xsV||_0xn.includes(_0xsV));
+        var _0xfl = _0xrI.filter(function(_0xi){
+          var _0xn = _0xgP(_0xi, ['Item', 'Nome_Item', 'Nome', 'Descricao']).toLowerCase();
+          var _0xfa = _0xgP(_0xi, ['Fase', 'Etapa']);
+          return (!_0xfV || _0xfa === _0xfV) && (!_0xsV || _0xn.includes(_0xsV));
         });
 
         _0xrC(_0xfl);
@@ -610,274 +587,305 @@
       };
 
       function _0xrC(_0xit){
-        var _0xct=document.getElementById('gridItens');
-        if(!_0xct)return;
-        if(!_0xit.length){
-          _0xct.innerHTML='<p style="color:var(--text-muted);grid-column:1/-1;">Nenhum item encontrado.</p>';
+        var _0xct = document.getElementById('gridItens');
+        if (!_0xct) return;
+        if (!_0xit.length) {
+          _0xct.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;">Nenhum item encontrado.</p>';
           return;
         }
 
-        _0xct.innerHTML=_0xit.map(function(_0xitem){
-          var _0xid=_0xgP(_0xitem,['ID_Item','ID','Codigo']);
-          var _0xnm=_0xgP(_0xitem,['Item','Nome_Item','Nome','Descricao'])||'Item sem nome';
-          var _0xfs=_0xgP(_0xitem,['Fase','Etapa']);
-          var _0xsp=_0xgP(_0xitem,['Especificacao','Especificação','Detalhes']);
-          var _0xim=_0xgP(_0xitem,['URL_Imagem','Imagem','Foto']);
-          var _0xqp=parseInt(_0xgP(_0xitem,['Qtd_Padrao','Qtd','Quantidade']))||1;
+        _0xct.innerHTML = _0xit.map(function(_0xitem){
+          var _0xid = _0xgP(_0xitem, ['ID_Item', 'ID', 'Codigo']);
+          var _0xnm = _0xgP(_0xitem, ['Item', 'Nome_Item', 'Nome', 'Descricao']) || 'Item sem nome';
+          var _0xfs = _0xgP(_0xitem, ['Fase', 'Etapa']);
+          var _0xsp = _0xgP(_0xitem, ['Especificacao', 'Especificação', 'Detalhes']);
+          var _0xim = _0xgP(_0xitem, ['URL_Imagem', 'Imagem', 'Foto']);
+          var _0xqp = parseInt(_0xgP(_0xitem, ['Qtd_Padrao', 'Qtd', 'Quantidade'])) || 1;
 
-          var _0xofs=_0xrP.filter(function(_0xp){
-            var _0xpi=_0xgP(_0xp,['ID_Item','ID','Codigo']);
-            var _0xpn=_0xgP(_0xp,['Item','Nome_Item','Nome']);
-            return (_0xid&&_0xpi&&_0xpi.toLowerCase()===_0xid.toLowerCase())||(_0xnm&&_0xpn&&_0xpn.toLowerCase()===_0xnm.toLowerCase());
+          var _0xofs = _0xrP.filter(function(_0xp){
+            var _0xpi = _0xgP(_0xp, ['ID_Item', 'ID', 'Codigo']);
+            var _0xpn = _0xgP(_0xp, ['Item', 'Nome_Item', 'Nome']);
+            return (_0xid && _0xpi && _0xpi.toLowerCase() === _0xid.toLowerCase()) || (_0xnm && _0xpn && _0xpn.toLowerCase() === _0xnm.toLowerCase());
           });
 
-          var _0xck=_0xid||_0xnm;
-          if(!_0xsU[_0xck]){
-            _0xsU[_0xck]={ofertaIndex:'',qtd:_0xqp,preco:0,link:'',cupom:'',nome:_0xnm,img:_0xim||'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto',lojaLabel:''};
+          var _0xck = _0xid || _0xnm;
+          if (!_0xsU[_0xck]) {
+            _0xsU[_0xck] = { ofertaIndex: '', qtd: _0xqp, preco: 0, link: '', cupom: '', nome: _0xnm, img: _0xim || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto', lojaLabel: '' };
           }
 
-          var _0xsel=_0xsU[_0xck];
-          var _0xsub=(_0xsel.preco*_0xsel.qtd)||0;
-          var _0xisA=_0xsel.ofertaIndex!==''&&_0xsel.preco>0;
-          var _0xcur=_0xofs[parseInt(_0xsel.ofertaIndex,10)];
-          var _0xcp=(_0xcur&&_0xcur['CUPOM'])?String(_0xcur['CUPOM']).trim():'';
+          var _0xsel = _0xsU[_0xck];
+          var _0xsub = (_0xsel.preco * _0xsel.qtd) || 0;
+          var _0xisA = _0xsel.ofertaIndex !== '' && _0xsel.preco > 0;
+          var _0xcur = _0xofs[parseInt(_0xsel.ofertaIndex, 10)];
+          var _0xcp = (_0xcur && _0xcur['CUPOM']) ? String(_0xcur['CUPOM']).trim() : '';
 
-          return '<div class="card">'+
-            '<img src="'+(_0xim||'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto')+'" alt="'+_0xnm+'" onerror="this.src=\'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto\'">'+
-            '<div class="card-body">'+
-              (_0xfs?'<div class="card-tags"><span class="tag tag-fase">'+_0xfs+'</span></div>':'')+
-              '<div class="item-title">'+_0xnm+'</div>'+
-              (_0xsp?'<p class="item-spec">'+_0xsp+'</p>':'')+
-              '<div class="offer-box">'+
-                '<label style="font-size:0.75rem;color:var(--text-muted);">Escolha a Loja / Marca:</label>'+
-                '<select onchange="atualizarOferta(\''+_0xck+'\',this.value,true)">'+
-                  '<option value="">-- Selecione uma opção --</option>'+
-                  _0xofs.map(function(_0xo,_0xi){
-                    var _0xnl=_0xgP(_0xo,['Nome_Loja','Loja']);
-                    var _0xmc=_0xgP(_0xo,['Marca_Vendida','Marca','Modelo']);
-                    var _0xpr=_0xcV(_0xgP(_0xo,['Preco','Valor']));
-                    var _0xisC=String(_0xi)===String(_0xsel.ofertaIndex);
-                    return '<option value="'+_0xi+'" '+(_0xisC?'selected':'')+'>'+_0xnl+(_0xmc?' ('+_0xmc+')':'')+' - R$ '+_0xpr.toFixed(2).replace('.',',')+'</option>';
-                  }).join('')+
-                '</select>'+
-                '<div class="controls-row">'+
-                  '<div style="flex-grow:1;">'+
-                    '<label style="font-size:0.7rem;color:var(--text-muted);">Quantidade:</label>'+
-                    '<input type="number" min="1" value="'+_0xsel.qtd+'" onchange="atualizarQtd(\''+_0xck+'\',this.value)">'+
-                  </div>'+
-                </div>'+
-                '<div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;margin-top:0.25rem;">'+
-                  (_0xsel.link?'<a href="'+_0xsel.link+'" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>':'<div></div>')+
-                  (_0xcp!==''&&_0xcp!=='-'?'<span class="cupom-badge">🏷️ CUPOM: '+_0xcp+'</span>':'')+
-                '</div>'+
-                '<div class="card-footer">'+
-                  '<span style="font-size:0.8rem;color:var(--text-muted);">Subtotal:</span>'+
-                  (_0xisA?'<span class="subtotal">R$ '+_0xsub.toFixed(2).replace('.',',')+'</span>':'<span class="subtotal pendente">Não selecionado</span>')+
-                '</div>'+
-              '</div>'+
-            '</div>'+
+          return '<div class="card">' +
+            '<img src="' + (_0xim || 'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto') + '" alt="' + _0xnm + '" onerror="this.src=\'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto\'">' +
+            '<div class="card-body">' +
+              (_0xfs ? '<div class="card-tags"><span class="tag tag-fase">' + _0xfs + '</span></div>' : '') +
+              '<div class="item-title">' + _0xnm + '</div>' +
+              (_0xsp ? '<p class="item-spec">' + _0xsp + '</p>' : '') +
+              '<div class="offer-box">' +
+                '<label style="font-size:0.75rem;color:var(--text-muted);">Escolha a Loja / Marca:</label>' +
+                '<select onchange="atualizarOferta(\'' + _0xck + '\',this.value,true)">' +
+                  '<option value="">-- Selecione uma opção --</option>' +
+                  _0xofs.map(function(_0xo, _0xi){
+                    var _0xnl = _0xgP(_0xo, ['Nome_Loja', 'Loja']);
+                    var _0xmc = _0xgP(_0xo, ['Marca_Vendida', 'Marca', 'Modelo']);
+                    var _0xpr = _0xcV(_0xgP(_0xo, ['Preco', 'Valor']));
+                    var _0xisC = String(_0xi) === String(_0xsel.ofertaIndex);
+                    return '<option value="' + _0xi + '" ' + (_0xisC ? 'selected' : '') + '>' + _0xnl + (_0xmc ? ' (' + _0xmc + ')' : '') + ' - R$ ' + _0xpr.toFixed(2).replace('.', ',') + '</option>';
+                  }).join('') +
+                '</select>' +
+                '<div class="controls-row">' +
+                  '<div style="flex-grow:1;">' +
+                    '<label style="font-size:0.7rem;color:var(--text-muted);">Quantidade:</label>' +
+                    '<input type="number" min="1" value="' + _0xsel.qtd + '" onchange="atualizarQtd(\'' + _0xck + '\',this.value)">' +
+                  </div>' +
+                </div>' +
+                '<div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;margin-top:0.25rem;">' +
+                  (_0xsel.link ? '<a href="' + _0xsel.link + '" target="_blank" rel="noopener noreferrer" class="btn-link">Ver na loja ↗</a>' : '<div></div>') +
+                  (_0xcp !== '' && _0xcp !== '-' ? '<span class="cupom-badge">🏷️ CUPOM: ' + _0xcp + '</span>' : '') +
+                '</div>' +
+                '<div class="card-footer">' +
+                  '<span style="font-size:0.8rem;color:var(--text-muted);">Subtotal:</span>' +
+                  (_0xisA ? '<span class="subtotal">R$ ' + _0xsub.toFixed(2).replace('.', ',') + '</span>' : '<span class="subtotal pendente">Não selecionado</span>') +
+                '</div>' +
+              '</div>' +
+            '</div>' +
           '</div>';
         }).join('');
       }
 
-      window.atualizarOferta=function(_0xck,_0xidx,_0xauto){
-        if(!_0xsU[_0xck])return;
-        if(_0xidx===''){
-          _0xsU[_0xck].ofertaIndex='';
-          _0xsU[_0xck].preco=0;
-          _0xsU[_0xck].link='';
-          _0xsU[_0xck].cupom='';
-          _0xsU[_0xck].lojaLabel='';
-        }else{
-          var _0xofs=_0xrP.filter(function(_0xp){
-            var _0xpi=_0xgP(_0xp,['ID_Item','ID','Codigo']);
-            var _0xpn=_0xgP(_0xp,['Item','Nome_Item','Nome']);
-            return (_0xpi&&_0xpi.toLowerCase()===_0xck.toLowerCase())||(_0xpn&&_0xpn.toLowerCase()===_0xck.toLowerCase());
+      window.atualizarOferta = function(_0xck, _0xidx, _0xauto){
+        if (!_0xsU[_0xck]) return;
+        if (_0xidx === '') {
+          _0xsU[_0xck].ofertaIndex = '';
+          _0xsU[_0xck].preco = 0;
+          _0xsU[_0xck].link = '';
+          _0xsU[_0xck].cupom = '';
+          _0xsU[_0xck].lojaLabel = '';
+        } else {
+          var _0xofs = _0xrP.filter(function(_0xp){
+            var _0xpi = _0xgP(_0xp, ['ID_Item', 'ID', 'Codigo']);
+            var _0xpn = _0xgP(_0xp, ['Item', 'Nome_Item', 'Nome']);
+            return (_0xpi && _0xpi.toLowerCase() === _0xck.toLowerCase()) || (_0xpn && _0xpn.toLowerCase() === _0xck.toLowerCase());
           });
-          var _0xof=_0xofs[parseInt(_0xidx,10)];
-          if(_0xof){
-            var _0xnl=_0xgP(_0xof,['Nome_Loja','Loja']);
-            var _0xmc=_0xgP(_0xof,['Marca_Vendida','Marca','Modelo']);
-            _0xsU[_0xck].ofertaIndex=_0xidx;
-            _0xsU[_0xck].preco=_0xcV(_0xgP(_0xof,['Preco','Valor']));
-            _0xsU[_0xck].link=_0xgP(_0xof,['Link','URL']);
-            _0xsU[_0xck].cupom=_0xgP(_0xof,['Cupom','CUPOM','Cod_Cupom']);
-            _0xsU[_0xck].lojaLabel=_0xnl+(_0xmc?' ('+_0xmc+')':'');
+          var _0xof = _0xofs[parseInt(_0xidx, 10)];
+          if (_0xof) {
+            var _0xnl = _0xgP(_0xof, ['Nome_Loja', 'Loja']);
+            var _0xmc = _0xgP(_0xof, ['Marca_Vendida', 'Marca', 'Modelo']);
+            _0xsU[_0xck].ofertaIndex = _0xidx;
+            _0xsU[_0xck].preco = _0xcV(_0xgP(_0xof, ['Preco', 'Valor']));
+            _0xsU[_0xck].link = _0xgP(_0xof, ['Link', 'URL']);
+            _0xsU[_0xck].cupom = _0xgP(_0xof, ['Cupom', 'CUPOM', 'Cod_Cupom']);
+            _0xsU[_0xck].lojaLabel = _0xnl + (_0xmc ? ' (' + _0xmc + ')' : '');
           }
         }
         window.aplicarFiltros();
-        if(_0xauto&&_0xidx!==''){window.toggleSidebar(true);}
+        if (_0xauto && _0xidx !== '') { window.toggleSidebar(true); }
       };
 
-      window.atualizarQtd=function(_0xck,_0xval){
-        if(_0xsU[_0xck]){
-          _0xsU[_0xck].qtd=Math.max(1,parseInt(_0xval,10)||1);
+      window.atualizarQtd = function(_0xck, _0xval){
+        if (_0xsU[_0xck]) {
+          _0xsU[_0xck].qtd = Math.max(1, parseInt(_0xval, 10) || 1);
         }
         window.aplicarFiltros();
       };
 
-      window.toggleSidebar=function(_0xshow){
-        var _0xdr=document.getElementById('sidebarDrawer');
-        var _0xov=document.getElementById('sidebarOverlay');
-        if(_0xshow){
-          if(_0xdr)_0xdr.classList.add('active');
-          if(_0xov)_0xov.classList.add('active');
-        }else{
-          if(_0xdr)_0xdr.classList.remove('active');
-          if(_0xov)_0xov.classList.remove('active');
+      window.toggleSidebar = function(_0xshow){
+        var _0xdr = document.getElementById('sidebarDrawer');
+        var _0xov = document.getElementById('sidebarOverlay');
+        if (_0xshow) {
+          if (_0xdr) _0xdr.classList.add('active');
+          if (_0xov) _0xov.classList.add('active');
+        } else {
+          if (_0xdr) _0xdr.classList.remove('active');
+          if (_0xov) _0xov.classList.remove('active');
         }
       };
 
       function _0xrS(){
-        var _0xct=document.getElementById('sidebarItemsList');
-        var _0xact=Object.entries(_0xsU).filter(function(_0xe){return _0xe[1].ofertaIndex!==''&&_0xe[1].preco>0;});
-        var _0xbP=document.getElementById('btnExportarPdf');
+        var _0xct = document.getElementById('sidebarItemsList');
+        var _0xact = Object.entries(_0xsU).filter(function(_0xe){ return _0xe[1].ofertaIndex !== '' && _0xe[1].preco > 0; });
+        var _0xbP = document.getElementById('btnExportarPdf');
 
-        var _0xbc=document.getElementById('cartCountBadge');
-        var _0xsc=document.getElementById('sidebarCount');
-        if(_0xbc)_0xbc.innerText=_0xact.length;
-        if(_0xsc)_0xsc.innerText=_0xact.length;
-        if(_0xbP)_0xbP.disabled=_0xact.length===0;
+        var _0xbc = document.getElementById('cartCountBadge');
+        var _0xsc = document.getElementById('sidebarCount');
+        if (_0xbc) _0xbc.innerText = _0xact.length;
+        if (_0xsc) _0xsc.innerText = _0xact.length;
+        if (_0xbP) _0xbP.disabled = _0xact.length === 0;
 
-        if(!_0xct)return;
-        if(!_0xact.length){
-          _0xct.innerHTML='<p style="color:var(--text-muted);font-size:0.85rem;text-align:center;margin-top:2rem;">Nenhum item selecionado ainda.<br>Escolha uma loja/marca nos cards ao lado!</p>';
+        if (!_0xct) return;
+        if (!_0xact.length) {
+          _0xct.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;text-align:center;margin-top:2rem;">Nenhum item selecionado ainda.<br>Escolha uma loja/marca nos cards ao lado!</p>';
           return;
         }
 
-        _0xct.innerHTML=_0xact.map(function(_0xe){
-          var _0xk=_0xe[0],_0xv=_0xe[1];
-          var _0xsub=_0xv.preco*_0xv.qtd;
-          return '<div class="cart-item">'+
-            '<img src="'+_0xv.img+'" alt="'+_0xv.nome+'" onerror="this.src=\'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto\'">'+
-            '<div class="cart-item-details">'+
-              '<div class="cart-item-title" title="'+_0xv.nome+'">'+_0xv.nome+'</div>'+
-              '<div class="cart-item-loja" title="'+_0xv.lojaLabel+'">'+_0xv.lojaLabel+'</div>'+
-              '<div class="cart-item-price">R$ '+_0xsub.toFixed(2).replace('.',',')+'</div>'+
-            '</div>'+
-            '<div class="cart-qty-ctrl">'+
-              '<button onclick="atualizarQtd(\''+_0xk+'\','+(_0xv.qtd-1)+')">−</button>'+
-              '<span>'+_0xv.qtd+'</span>'+
-              '<button onclick="atualizarQtd(\''+_0xk+'\','+(_0xv.qtd+1)+')">+</button>'+
-            '</div>'+
-            '<button class="btn-remove-item" title="Remover seleção" onclick="atualizarOferta(\''+_0xk+'\',\'\')">🗑️</button>'+
+        _0xct.innerHTML = _0xact.map(function(_0xe){
+          var _0xk = _0xe[0], _0xv = _0xe[1];
+          var _0xsub = _0xv.preco * _0xv.qtd;
+          return '<div class="cart-item">' +
+            '<img src="' + _0xv.img + '" alt="' + _0xv.nome + '" onerror="this.src=\'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto\'">' +
+            '<div class="cart-item-details">' +
+              '<div class="cart-item-title" title="' + _0xv.nome + '">' + _0xv.nome + '</div>' +
+              '<div class="cart-item-loja" title="' + _0xv.lojaLabel + '">' + _0xv.lojaLabel + '</div>' +
+              '<div class="cart-item-price">R$ ' + _0xsub.toFixed(2).replace('.', ',') + '</div>' +
+            '</div>' +
+            '<div class="cart-qty-ctrl">' +
+              '<button onclick="atualizarQtd(\'' + _0xk + '\',' + (_0xv.qtd - 1) + ')">−</button>' +
+              '<span>' + _0xv.qtd + '</span>' +
+              '<button onclick="atualizarQtd(\'' + _0xk + '\',' + (_0xv.qtd + 1) + ')">+</button>' +
+            '</div>' +
+            '<button class="btn-remove-item" title="Remover seleção" onclick="atualizarOferta(\'' + _0xk + '\',\'\')">🗑️</button>' +
           '</div>';
         }).join('');
       }
 
       function _0xcT(){
-        var _0xtot=0,_0xcnt=0;
+        var _0xtot = 0, _0xcnt = 0;
         _0xrI.forEach(function(_0xi){
-          var _0xck=_0xgP(_0xi,['ID_Item','ID','Codigo'])||_0xgP(_0xi,['Item','Nome_Item','Nome']);
-          var _0xsel=_0xsU[_0xck];
-          if(_0xsel&&_0xsel.ofertaIndex!==''&&_0xsel.preco>0){
-            _0xtot+=_0xsel.preco*_0xsel.qtd;
-            if(_0xsel.qtd>0)_0xcnt++;
+          var _0xck = _0xgP(_0xi, ['ID_Item', 'ID', 'Codigo']) || _0xgP(_0xi, ['Item', 'Nome_Item', 'Nome']);
+          var _0xsel = _0xsU[_0xck];
+          if (_0xsel && _0xsel.ofertaIndex !== '' && _0xsel.preco > 0) {
+            _0xtot += _0xsel.preco * _0xsel.qtd;
+            if (_0xsel.qtd > 0) _0xcnt++;
           }
         });
-        var _0xfmt='R$ '+_0xtot.toFixed(2).replace('.',',');
-        var _0xtg=document.getElementById('totalGeral');
-        var _0xst=document.getElementById('sidebarTotal');
-        var _0xsc=document.getElementById('statsContador');
-        if(_0xtg)_0xtg.innerText=_0xfmt;
-        if(_0xst)_0xst.innerText=_0xfmt;
-        if(_0xsc)_0xsc.innerText=_0xcnt+' de '+_0xrI.length+' itens orçados';
+        var _0xfmt = 'R$ ' + _0xtot.toFixed(2).replace('.', ',');
+        var _0xtg = document.getElementById('totalGeral');
+        var _0xst = document.getElementById('sidebarTotal');
+        var _0xsc = document.getElementById('statsContador');
+        if (_0xtg) _0xtg.innerText = _0xfmt;
+        if (_0xst) _0xst.innerText = _0xfmt;
+        if (_0xsc) _0xsc.innerText = _0xcnt + ' de ' + _0xrI.length + ' itens orçados';
       }
 
-      window.gerarPDF=function(){
-        var _0xact=Object.entries(_0xsU).filter(function(_0xe){return _0xe[1].ofertaIndex!==''&&_0xe[1].preco>0;});
-        if(!_0xact.length){alert('Selecione ao menos um equipamento para gerar o relatório.');return;}
+      window.gerarPDF = function(){
+        var _0xact = Object.entries(_0xsU).filter(function(_0xe){ return _0xe[1].ofertaIndex !== '' && _0xe[1].preco > 0; });
+        if (!_0xact.length) { alert('Selecione ao menos um equipamento para gerar o relatório.'); return; }
 
-        var jsPDF=window.jspdf.jsPDF;
-        var _0xdoc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-        var _0xd=new Date();
-        var _0xds=_0xd.toLocaleDateString('pt-BR');
-        var _0xhs=_0xd.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+        var jsPDF = window.jspdf.jsPDF;
+        var _0xdoc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        var _0xd = new Date();
+        var _0xds = _0xd.toLocaleDateString('pt-BR');
+        var _0xhs = _0xd.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-        _0xdoc.setFillColor(15,23,42);
-        _0xdoc.rect(0,0,210,26,'F');
-        _0xdoc.setFont('helvetica','bold');
+        _0xdoc.setFillColor(15, 23, 42);
+        _0xdoc.rect(0, 0, 210, 26, 'F');
+        _0xdoc.setFont('helvetica', 'bold');
         _0xdoc.setFontSize(13);
-        _0xdoc.setTextColor(255,255,255);
-        _0xdoc.text('ORÇAMENTO DE ENXOVAL PARA O CFP - PMDF',14,11);
-        _0xdoc.setFont('helvetica','normal');
+        _0xdoc.setTextColor(255, 255, 255);
+        _0xdoc.text('ORÇAMENTO DE ENXOVAL PARA O CFP - PMDF', 14, 11);
+        _0xdoc.setFont('helvetica', 'normal');
         _0xdoc.setFontSize(9);
-        _0xdoc.setTextColor(203,213,225);
-        _0xdoc.text('Relatório de Orçamento de Enxoval • CFP (Curso de Formação de Praças)',14,17);
+        _0xdoc.setTextColor(203, 213, 225);
+        _0xdoc.text('Relatório de Orçamento de Enxoval • CFP (Curso de Formação de Praças)', 14, 17);
         _0xdoc.setFontSize(8);
-        _0xdoc.setTextColor(148,163,184);
-        _0xdoc.text('Cotação emitida em: '+_0xds+' às '+_0xhs,14,22);
+        _0xdoc.setTextColor(148, 163, 184);
+        _0xdoc.text('Cotação emitida em: ' + _0xds + ' às ' + _0xhs, 14, 22);
 
-        var _0xtG=0;
-        var _0xlm=[];
-        var _0xrw=_0xact.map(function(_0xe,_0xidx){
-          var _0xit=_0xe[1];
-          var _0xsb=_0xit.preco*_0xit.qtd;
-          _0xtG+=_0xsb;
-          _0xlm.push(_0xit.link||'');
+        var _0xtG = 0;
+        var _0xlm = [];
+        var _0xrw = _0xact.map(function(_0xe, _0xidx){
+          var _0xit = _0xe[1];
+          var _0xsb = _0xit.preco * _0xit.qtd;
+          _0xtG += _0xsb;
+          _0xlm.push(_0xit.link || '');
           return [
-            (_0xidx+1).toString(),
+            (_0xidx + 1).toString(),
             _0xit.nome,
-            _0xit.lojaLabel||'Não informada',
-            _0xit.link?' ':'-',
+            _0xit.lojaLabel || 'Não informada',
+            _0xit.link ? ' ' : '-',
             _0xit.qtd.toString(),
-            'R$ '+_0xit.preco.toFixed(2).replace('.',','),
-            'R$ '+_0xsb.toFixed(2).replace('.',',')
+            'R$ ' + _0xit.preco.toFixed(2).replace('.', ','),
+            'R$ ' + _0xsb.toFixed(2).replace('.', ',')
           ];
         });
 
         _0xrw.push([
-          {content:'TOTAL ESTIMADO',colSpan:6,styles:{halign:'right',fontStyle:'bold',fillColor:[241,245,249]}},
-          {content:'R$ '+_0xtG.toFixed(2).replace('.',','),styles:{fontStyle:'bold',textColor:[5,150,105],fillColor:[241,245,249]}}
+          { content: 'TOTAL ESTIMADO', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold', fillColor: [241, 245, 249] } },
+          { content: 'R$ ' + _0xtG.toFixed(2).replace('.', ','), styles: { fontStyle: 'bold', textColor: [5, 150, 105], fillColor: [241, 245, 249] } }
         ]);
 
         _0xdoc.autoTable({
-          startY:32,
-          head:[['#','Item / Equipamento','Fornecedor / Oferta','Link','Qtd','Unitário','Subtotal']],
-          body:_0xrw,
-          theme:'striped',
-          headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontSize:8.5,fontStyle:'bold',halign:'left'},
-          styles:{fontSize:8,cellPadding:2.5,valign:'middle'},
-          columnStyles:{
-            0:{cellWidth:8,halign:'center'},
-            1:{cellWidth:56},
-            2:{cellWidth:44},
-            3:{cellWidth:18,halign:'center'},
-            4:{cellWidth:12,halign:'center'},
-            5:{cellWidth:20,halign:'right'},
-            6:{cellWidth:24,halign:'right'}
+          startY: 32,
+          head: [['#', 'Item / Equipamento', 'Fornecedor / Oferta', 'Link', 'Qtd', 'Unitário', 'Subtotal']],
+          body: _0xrw,
+          theme: 'striped',
+          headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontSize: 8.5, fontStyle: 'bold', halign: 'left' },
+          styles: { fontSize: 8, cellPadding: 2.5, valign: 'middle' },
+          columnStyles: {
+            0: { cellWidth: 8, halign: 'center' },
+            1: { cellWidth: 56 },
+            2: { cellWidth: 44 },
+            3: { cellWidth: 18, halign: 'center' },
+            4: { cellWidth: 12, halign: 'center' },
+            5: { cellWidth: 20, halign: 'right' },
+            6: { cellWidth: 24, halign: 'right' }
           },
-          alternateRowStyles:{fillColor:[248,250,252]},
-          didDrawCell:function(_0xdt){
-            if(_0xdt.section==='body'&&_0xdt.column.index===3&&_0xdt.row.index<_0xlm.length){
-              var _0xu=_0xlm[_0xdt.row.index];
-              if(_0xu){
-                var _0xw=15,_0xh=4.8;
-                var _0xx=_0xdt.cell.x+(_0xdt.cell.width-_0xw)/2;
-                var _0xy=_0xdt.cell.y+(_0xdt.cell.height-_0xh)/2;
+          alternateRowStyles: { fillColor: [248, 250, 252] },
+          didDrawCell: function(_0xdt){
+            if (_0xdt.section === 'body' && _0xdt.column.index === 3 && _0xdt.row.index < _0xlm.length) {
+              var _0xu = _0xlm[_0xdt.row.index];
+              if (_0xu) {
+                var _0xw = 15, _0xh = 4.8;
+                var _0xx = _0xdt.cell.x + (_0xdt.cell.width - _0xw) / 2;
+                var _0xy = _0xdt.cell.y + (_0xdt.cell.height - _0xh) / 2;
 
-                _0xdoc.setFillColor(37,99,235);
-                _0xdoc.roundedRect(_0xx,_0xy,_0xw,_0xh,1,1,'F');
-                _0xdoc.setFont('helvetica','bold');
+                _0xdoc.setFillColor(37, 99, 235);
+                _0xdoc.roundedRect(_0xx, _0xy, _0xw, _0xh, 1, 1, 'F');
+                _0xdoc.setFont('helvetica', 'bold');
                 _0xdoc.setFontSize(6.5);
-                _0xdoc.setTextColor(255,255,255);
-                _0xdoc.text('VER ITEM',_0xx+(_0xw/2),_0xy+3.3,{align:'center'});
-                _0xdoc.link(_0xx,_0xy,_0xw,_0xh,{url:_0xu});
+                _0xdoc.setTextColor(255, 255, 255);
+                _0xdoc.text('VER ITEM', _0xx + (_0xw / 2), _0xy + 3.3, { align: 'center' });
+                _0xdoc.link(_0xx, _0xy, _0xw, _0xh, { url: _0xu });
               }
             }
           },
-          didDrawPage:function(_0xdt){
-            var _0xpc=_0xdoc.internal.getNumberOfPages();
+          didDrawPage: function(_0xdt){
+            var _0xpc = _0xdoc.internal.getNumberOfPages();
             _0xdoc.setFontSize(8);
-            _0xdoc.setTextColor(148,163,184);
-            _0xdoc.text('Página '+_0xdt.pageNumber+' de '+_0xpc+' • Sistema de Enxovais Operacionais PMDF',14,_0xdoc.internal.pageSize.height-10);
+            _0xdoc.setTextColor(148, 163, 184);
+            _0xdoc.text('Página ' + _0xdt.pageNumber + ' de ' + _0xpc + ' • Sistema de Enxovais Operacionais PMDF', 14, _0xdoc.internal.pageSize.height - 10);
           }
         });
 
-        _0xdoc.save('Orcamento_CFP_PMDF_'+_0xds.replace(/\//g,'-')+'.pdf');
+        _0xdoc.save('Orcamento_CFP_PMDF_' + _0xds.replace(/\//g, '-') + '.pdf');
       };
 
-      init();
+      async function _0xstart(){
+        try { localStorage.removeItem('enxoval_pmdf_cfp_state'); } catch(_0xe){}
+        
+        var _0xst = document.getElementById('statsContador');
+        if (_0xst) _0xst.innerText = 'Carregando enxoval do CFP...';
+
+        try {
+     
+          var _0xresults = await Promise.allSettled([_0xpS(_0xuA), _0xpS(_0xuB)]);
+
+          if (_0xresults[0].status === 'fulfilled') {
+            _0xrI = _0xresults[0].value;
+          } else {
+            throw _0xresults[0].reason;
+          }
+
+          if (_0xresults[1].status === 'fulfilled') {
+            _0xrP = _0xresults[1].value;
+          } else {
+            console.warn('Preços indisponíveis no momento:', _0xresults[1].reason);
+          }
+
+          _0xpF();
+          window.aplicarFiltros();
+        } catch(_0xerr) {
+          var _0xg = document.getElementById('gridItens');
+          if (_0xg) _0xg.innerHTML = '<p style="color:var(--text-muted);padding:1rem;">Erro ao carregar dados: ' + _0xerr.message + '</p>';
+          if (_0xst) _0xst.innerText = 'Erro de sincronização com a planilha.';
+        }
+      }
+
+      _0xstart();
     })();
   </script>
 </body>
