@@ -502,6 +502,11 @@
   </footer>
 
   <script>
+
+  
+    if (window.location.pathname.endsWith('.html')) {
+      window.history.replaceState(null, document.title, window.location.pathname.replace(/\/[^\/]+\.html$/, '/'));
+        }  
     document.addEventListener('contextmenu', function (e) {
       e.preventDefault();
     });
