@@ -786,26 +786,61 @@
       _0x_doc.text(`Cotação emitida em: ${_0x_ds} às ${_0x_hs}`,14,22);
 
       let _0x_tg=0;
+      const _0x_lm=[];
       const _0x_rw=_0x_act.map(([_0x_k,_0x_it],_0x_idx)=>{
         const _0x_sb=_0x_it.preco*_0x_it.qtd;
         _0x_tg+=_0x_sb;
-        return [(_0x_idx+1).toString(),_0x_it.nome,_0x_it.lojaLabel||'Não informada',_0x_it.qtd.toString(),`R$ ${_0x_it.preco.toFixed(2).replace('.',',')}`,`R$ ${_0x_sb.toFixed(2).replace('.',',')}`];
+        _0x_lm.push(_0x_it.link||'');
+        return [
+          (_0x_idx+1).toString(),
+          _0x_it.nome,
+          _0x_it.lojaLabel||'Não informada',
+          _0x_it.link?' ':'-',
+          _0x_it.qtd.toString(),
+          `R$ ${_0x_it.preco.toFixed(2).replace('.',',')}`,
+          `R$ ${_0x_sb.toFixed(2).replace('.',',')}`
+        ];
       });
 
       _0x_rw.push([
-        {content:'TOTAL ESTIMADO',colSpan:5,styles:{halign:'right',fontStyle:'bold',fillColor:[241,245,249]}},
+        {content:'TOTAL ESTIMADO',colSpan:6,styles:{halign:'right',fontStyle:'bold',fillColor:[241,245,249]}},
         {content:`R$ ${_0x_tg.toFixed(2).replace('.',',')}`,styles:{fontStyle:'bold',textColor:[5,150,105],fillColor:[241,245,249]}}
       ]);
 
       _0x_doc.autoTable({
         startY:32,
-        head:[['#','Item / Equipamento','Fornecedor / Oferta','Qtd','Unitário','Subtotal']],
+        head:[['#','Item / Equipamento','Fornecedor / Oferta','Link','Qtd','Unitário','Subtotal']],
         body:_0x_rw,
         theme:'striped',
         headStyles:{fillColor:[37,99,235],textColor:[255,255,255],fontSize:8.5,fontStyle:'bold',halign:'left'},
         styles:{fontSize:8,cellPadding:2.5,valign:'middle'},
-        columnStyles:{0:{cellWidth:10,halign:'center'},1:{cellWidth:65},2:{cellWidth:55},3:{cellWidth:15,halign:'center'},4:{cellWidth:22,halign:'right'},5:{cellWidth:23,halign:'right'}},
+        columnStyles:{
+          0:{cellWidth:8,halign:'center'},
+          1:{cellWidth:56},
+          2:{cellWidth:44},
+          3:{cellWidth:18,halign:'center'},
+          4:{cellWidth:12,halign:'center'},
+          5:{cellWidth:20,halign:'right'},
+          6:{cellWidth:24,halign:'right'}
+        },
         alternateRowStyles:{fillColor:[248,250,252]},
+        didDrawCell:_0x_dt=>{
+          if(_0x_dt.section==='body'&&_0x_dt.column.index===3&&_0x_dt.row.index<_0x_lm.length){
+            const _0x_u=_0x_lm[_0x_dt.row.index];
+            if(_0x_u){
+              const _0x_bw=15,_0x_bh=4.8;
+              const _0x_bx=_0x_dt.cell.x+(_0x_dt.cell.width-_0x_bw)/2;
+              const _0x_by=_0x_dt.cell.y+(_0x_dt.cell.height-_0x_bh)/2;
+              _0x_doc.setFillColor(37,99,235);
+              _0x_doc.roundedRect(_0x_bx,_0x_by,_0x_bw,_0x_bh,1,1,'F');
+              _0x_doc.setFont('helvetica','bold');
+              _0x_doc.setFontSize(6.5);
+              _0x_doc.setTextColor(255,255,255);
+              _0x_doc.text('VER ITEM',_0x_bx+(_0x_bw/2),_0x_by+3.3,{align:'center'});
+              _0x_doc.link(_0x_bx,_0x_by,_0x_bw,_0x_bh,{url:_0x_u});
+            }
+          }
+        },
         didDrawPage:_0x_dt=>{
           const _0x_pc=_0x_doc.internal.getNumberOfPages();
           _0x_doc.setFontSize(8);
