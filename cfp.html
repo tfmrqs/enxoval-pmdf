@@ -460,6 +460,9 @@
 
   <main>
     <div class="toolbar">
+      <button type="button" class="btn-nav-lojas" style="background: #059669; border-color: #047857;" onclick="selecionarMenoresPrecos()">
+  ⚡ Criar Lista Automática com Menores Preços
+      </button>
       <div style="display: flex; gap: 0.5rem; align-items: center;">
         <label style="font-size: 0.8rem; color: var(--text-muted);">Fase:</label>
         <select id="filterFase" onchange="aplicarFiltros()"></select>
@@ -662,6 +665,56 @@
       }).join('');
     }
 
+    function selecionarMenoresPrecos(){
+      if(!_0x_ri.length||!_0x_rp.length){alert('Aguarde os dados serem carregados.');return;}
+      var _0xalt=0;
+      _0x_ri.forEach(function(_0xit){
+        var _0xid=_0x_gp(_0xit,['ID_Item','ID','Codigo']);
+        var _0xnm=_0x_gp(_0xit,['Item','Nome_Item','Nome','Descricao'])||'Item sem nome';
+        var _0xqp=parseInt(_0x_gp(_0xit,['Qtd_Padrao','Qtd','Quantidade']))||1;
+        var _0xck=_0xid||_0xnm;
+
+        var _0xofs=_0x_rp.filter(function(_0xp){
+          var _0xpi=_0x_gp(_0xp,['ID_Item','ID','Codigo']);
+          var _0xpn=_0x_gp(_0xp,['Item','Nome_Item','Nome']);
+          return (_0xid&&_0xpi&&_0xpi.toLowerCase()===_0xid.toLowerCase())||(_0xnm&&_0xpn&&_0xpn.toLowerCase()===_0xnm.toLowerCase());
+        });
+
+        if(!_0xofs.length)return;
+
+        var _0xmi=-1,_0xmp=Infinity;
+        _0xofs.forEach(function(_0xo,_0xidx){
+          var _0xpr=_0x_cvp(_0x_gp(_0xo,['Preco','Valor']));
+          if(_0xpr>0&&_0xpr<_0xmp){_0xmp=_0xpr;_0xmi=_0xidx;}
+        });
+
+        if(_0xmi!==-1){
+          var _0xof=_0xofs[_0xmi];
+          var _0xnl=_0x_gp(_0xof,['Nome_Loja','Loja']);
+          var _0xmc=_0x_gp(_0xof,['Marca_Vendida','Marca','Modelo']);
+          var _0xim=_0x_gp(_0xit,['URL_Imagem','Imagem','Foto']);
+          var _0xqa=_0x_su[_0xck]?_0x_su[_0xck].qtd:_0xqp;
+
+          _0x_su[_0xck]={
+            ofertaIndex:String(_0xmi),
+            qtd:_0xqa,
+            preco:_0xmp,
+            link:_0x_gp(_0xof,['Link','URL']),
+            cupom:_0x_gp(_0xof,['Cupom','CUPOM','Cod_Cupom']),
+            nome:_0xnm,
+            img:_0xim||'https://placehold.co/400x250/151d30/94a3b8?text=Sem+Foto',
+            lojaLabel:_0xnl+(_0xmc?' ('+_0xmc+')':'')
+          };
+          _0xalt++;
+        }
+      });
+
+      if(_0xalt>0){
+        aplicarFiltros();
+        toggleSidebar(true);
+      }
+    }
+    
     function atualizarOferta(_0x_k,_0x_idx,_0x_op=false){
       if(!_0x_su[_0x_k])return;
       if(_0x_idx===''){
