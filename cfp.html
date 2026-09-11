@@ -858,6 +858,7 @@
       const dataStr = agora.toLocaleDateString('pt-BR');
       const horaStr = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
+      // Cabeçalho institucional escuro
       doc.setFillColor(15, 23, 42);
       doc.rect(0, 0, 210, 26, 'F');
 
@@ -887,7 +888,7 @@
           (index + 1).toString(),
           item.nome,
           item.lojaLabel || 'Não informada',
-          item.link ? 'Acessar ↗' : '-',
+          item.link ? ' ' : '-', // Deixa espaço em branco para desenhar o botão personalizado
           item.qtd.toString(),
           `R$ ${item.preco.toFixed(2).replace('.', ',')}`,
           `R$ ${subtotal.toFixed(2).replace('.', ',')}`
@@ -918,21 +919,38 @@
         },
         columnStyles: {
           0: { cellWidth: 8, halign: 'center' },
-          1: { cellWidth: 54 },
+          1: { cellWidth: 56 },
           2: { cellWidth: 44 },
-          3: { cellWidth: 18, halign: 'center', textColor: [37, 99, 235] },
+          3: { cellWidth: 18, halign: 'center' },
           4: { cellWidth: 12, halign: 'center' },
-          5: { cellWidth: 22, halign: 'right' },
+          5: { cellWidth: 20, halign: 'right' },
           6: { cellWidth: 24, halign: 'right' }
         },
         alternateRowStyles: {
           fillColor: [248, 250, 252]
         },
         didDrawCell: data => {
+          // Renderização do botão refinado para a coluna 'Link'
           if (data.section === 'body' && data.column.index === 3 && data.row.index < linksMapeados.length) {
             const url = linksMapeados[data.row.index];
             if (url) {
-              doc.link(data.cell.x, data.cell.y, data.cell.width, data.cell.height, { url: url });
+              const btnW = 15;
+              const btnH = 4.8;
+              const btnX = data.cell.x + (data.cell.width - btnW) / 2;
+              const btnY = data.cell.y + (data.cell.height - btnH) / 2;
+
+              // Fundo do botão (Azul clássico)
+              doc.setFillColor(37, 99, 235);
+              doc.roundedRect(btnX, btnY, btnW, btnH, 1, 1, 'F');
+
+              // Texto "Ver item" centralizado e nítido
+              doc.setFont('helvetica', 'bold');
+              doc.setFontSize(6.5);
+              doc.setTextColor(255, 255, 255);
+              doc.text('VER ITEM', btnX + (btnW / 2), btnY + 3.3, { align: 'center' });
+
+              // Hiperlink clicável no PDF cobrindo toda a área do botão
+              doc.link(btnX, btnY, btnW, btnH, { url: url });
             }
           }
         },
