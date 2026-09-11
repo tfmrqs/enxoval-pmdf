@@ -669,6 +669,10 @@
       if(!_0x_ri.length||!_0x_rp.length){alert('Aguarde os dados serem carregados.');return;}
       var _0xalt=0;
       _0x_ri.forEach(function(_0xit){
+        var _0xob=_0x_gp(_0xit,['Obrigatoriedade','Obrigatorio','Tipo','Status']);
+        var _0xisOb=_0xob.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()==='item obrigatorio';
+        if(!_0xisOb)return;
+
         var _0xid=_0x_gp(_0xit,['ID_Item','ID','Codigo']);
         var _0xnm=_0x_gp(_0xit,['Item','Nome_Item','Nome','Descricao'])||'Item sem nome';
         var _0xqp=parseInt(_0x_gp(_0xit,['Qtd_Padrao','Qtd','Quantidade']))||1;
@@ -712,6 +716,8 @@
       if(_0xalt>0){
         aplicarFiltros();
         toggleSidebar(true);
+      } else {
+        alert('Nenhum item obrigatório com oferta válida foi encontrado.');
       }
     }
     
