@@ -185,6 +185,10 @@
   </main>
 
   <script>
+
+   if (window.location.pathname.endsWith('.html')) {
+    window.history.replaceState(null, document.title, window.location.pathname.replace(/\/[^\/]+\.html$/, '/'));
+      }
     // Bloqueio de Inspeção
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
