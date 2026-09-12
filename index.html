@@ -2,239 +2,438 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Enxovais Operacionais - PMDF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sistema de Enxovais • PMDF</title>
+  
+  <!-- Fontes de Alta Precisão -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #151d30;
-      --border: #22304e;
+      --bg: #060911;
+      --card-bg: rgba(15, 23, 42, 0.72);
+      --card-hover: rgba(26, 38, 66, 0.88);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: #3b82f6;
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
+      --primary-glow: rgba(37, 99, 235, 0.35);
       --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.25);
       --text: #f8fafc;
       --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --blur: blur(14px);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; 
+      -webkit-font-smoothing: antialiased; 
+    }
 
+    body { 
+      background: var(--bg); 
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.14) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text); 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    /* Top Header Hero */
     header {
-      background: var(--card-bg);
+      background: rgba(10, 15, 29, 0.85);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       border-bottom: 1px solid var(--border);
-      padding: 2.5rem 1.5rem;
+      padding: 3.5rem 1.5rem 2.8rem;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
-    .badge {
-      display: inline-block;
-      background: rgba(37, 99, 235, 0.15);
-      border: 1px solid var(--primary);
-      color: #60a5fa;
-      padding: 0.3rem 0.8rem;
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 450px;
+      height: 160px;
+      background: radial-gradient(ellipse, rgba(37, 99, 235, 0.25), transparent 70%);
+      pointer-events: none;
+    }
+
+    .badge-gov {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      color: #93c5fd;
+      padding: 0.4rem 0.95rem;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 0 16px rgba(37, 99, 235, 0.2);
     }
 
-    h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
-    p.subtitle { color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1rem; line-height: 1.5; }
+    h1 { 
+      font-size: 2.35rem; 
+      font-weight: 800; 
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem; 
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle { 
+      color: var(--text-muted); 
+      max-width: 620px; 
+      margin: 0 auto; 
+      font-size: 0.95rem; 
+      line-height: 1.6; 
+      font-weight: 400;
+    }
 
     main {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 2.5rem auto;
       padding: 0 1.5rem;
       flex-grow: 1;
       width: 100%;
     }
 
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: 700;
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
       margin-bottom: 1.25rem;
+    }
+
+    .section-indicator {
+      width: 4px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 2px;
+      box-shadow: 0 0 8px var(--primary-glow);
+    }
+
+    .section-title {
+      font-size: 0.88rem;
+      font-weight: 800;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
     }
 
     .courses-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 3rem;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.75rem;
     }
 
     .course-card {
       background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.75rem;
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       text-decoration: none;
       color: inherit;
-      transition: transform 0.2s, border-color 0.2s;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
     }
 
+    .course-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: transparent;
+      transition: background 0.25s ease;
+    }
+
     .course-card:hover:not(.disabled) {
-      transform: translateY(-4px);
-      border-color: var(--primary);
+      transform: translateY(-3px);
+      border-color: rgba(59, 130, 246, 0.45);
+      background: var(--card-hover);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .course-card:hover:not(.disabled)::before {
+      background: linear-gradient(90deg, #2563eb, #10b981);
     }
 
     .course-card.disabled {
-      opacity: 0.6;
+      opacity: 0.55;
       cursor: not-allowed;
+      border-style: dashed;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
     .course-tag {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
       display: inline-block;
-      margin-bottom: 0.75rem;
-      width: fit-content;
     }
 
-    .tag-active { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-    .tag-soon { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); }
+    .tag-active { 
+      background: rgba(16, 185, 129, 0.15); 
+      color: #34d399; 
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
 
-    .course-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .course-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.5rem; }
+    .tag-soon { 
+      background: rgba(148, 163, 184, 0.08); 
+      color: var(--text-dim); 
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .course-title { 
+      font-size: 1.15rem; 
+      font-weight: 700; 
+      line-height: 1.3;
+      margin-bottom: 0.45rem; 
+      color: #fff;
+    }
+
+    .course-desc { 
+      font-size: 0.82rem; 
+      color: var(--text-muted); 
+      line-height: 1.5; 
+      margin-bottom: 1.5rem; 
+    }
 
     .card-action {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--primary);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #60a5fa;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--border);
+      transition: gap 0.2s ease, color 0.2s ease;
+    }
+
+    .course-card:hover:not(.disabled) .card-action {
+      color: #93c5fd;
+      gap: 0.65rem;
+    }
+
+    .card-action.disabled-action {
+      color: var(--text-dim);
     }
 
     footer {
       border-top: 1px solid var(--border);
-      padding: 1.5rem;
+      padding: 1.8rem 1.5rem;
       text-align: center;
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      background: rgba(8, 12, 22, 0.95);
+      backdrop-filter: var(--blur);
+    }
+
+    footer strong {
       color: var(--text-muted);
-      font-size: 0.85rem;
+    }
+
+    /* Mobile Adaptations */
+    @media (max-width: 640px) {
+      header { padding: 2.5rem 1rem 2rem; }
+      h1 { font-size: 1.75rem; }
+      p.subtitle { font-size: 0.86rem; }
+      main { margin: 1.75rem auto; padding: 0 1rem; }
+      .courses-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .course-card { padding: 1.25rem; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="badge">Polícia Militar do Distrito Federal</div>
+    <div class="badge-gov">🛡️ Polícia Militar do Distrito Federal</div>
     <h1>Plataforma de Enxovais</h1>
-    <p class="subtitle">Guia de equipamentos e comparador de preços para cursos de formação e operacionais.</p>
+    <p class="subtitle">Catálogo de equipamentos regulamentares para cursos de formação e cursos operacionais.</p>
   </header>
 
   <main>
-    <div class="section-title">Formação Básica</div>
+    <div class="section-header">
+      <div class="section-indicator"></div>
+      <div class="section-title">Cursos de Formação Básica</div>
+    </div>
     <div class="courses-grid">
       <!-- CFP ATIVO -->
       <a href="cfp.html" class="course-card">
         <div>
-          <span class="course-tag tag-active">Disponível</span>
-          <div class="course-title">CFP - Curso de Formação de Praças</div>
+          <div class="card-top">
+            <div class="card-icon">👮‍♂️</div>
+            <span class="course-tag tag-active">● Disponível</span>
+          </div>
+          <div class="course-title">CFP • Formação de Praças</div>
           <p class="course-desc">Listagem completa do enxoval.</p>
         </div>
-        <div class="card-action">Acessar e Calcular Enxoval →</div>
+        <div class="card-action">Acessar e Montar Orçamento ↗</div>
       </a>
 
       <!-- CFO (EM BREVE) -->
       <div class="course-card disabled">
         <div>
-          <span class="course-tag tag-soon">Em Breve</span>
-          <div class="course-title">CFO - Curso de Formação de Oficiais</div>
-          <p class="course-desc">Itens para o CFO (Curso de Formação de Oficiais).</p>
+          <div class="card-top">
+            <div class="card-icon">⚔️</div>
+            <span class="course-tag tag-soon">Em Homologação</span>
+          </div>
+          <div class="course-title">CFO • Formação de Oficiais</div>
+          <p class="course-desc">Catálogo de itens do enxoval.</p>
         </div>
-        <div class="card-action" style="color: var(--text-muted);">Em Breve</div>
+        <div class="card-action disabled-action">Em Breve</div>
       </div>
     </div>
 
-    <div class="section-title">Cursos de Especialização Tática</div>
+    <div class="section-header">
+      <div class="section-indicator" style="background: #10b981; box-shadow: 0 0 8px var(--accent-glow);"></div>
+      <div class="section-title">Especialização e Operações Táticas</div>
+    </div>
     <div class="courses-grid">
       <!-- CTOP -->
       <div class="course-card disabled">
         <div>
-          <span class="course-tag tag-soon">Em Breve</span>
-          <div class="course-title">CTOP</div>
-          <p class="course-desc">Curso Tático Operacional (CTOP). </p>
+          <div class="card-top">
+            <div class="card-icon">🦅</div>
+            <span class="course-tag tag-soon">Em Breve</span>
+          </div>
+          <div class="course-title">CTOP • Tático Operacional</div>
+          <p class="course-desc">Curso Tático Operacional.</p>
         </div>
-        <div class="card-action" style="color: var(--text-muted);">Em desenvolvimento</div>
+        <div class="card-action disabled-action">Em desenvolvimento</div>
       </div>
 
       <!-- ROTAM -->
       <div class="course-card disabled">
         <div>
-          <span class="course-tag tag-soon">Em Breve</span>
-          <div class="course-title">ROTAM</div>
-          <p class="course-desc">Curso Operacional de ROTAM (COR). </p>
+          <div class="card-top">
+            <div class="card-icon">⚡</div>
+            <span class="course-tag tag-soon">Em Breve</span>
+          </div>
+          <div class="course-title">ROTAM • COR</div>
+          <p class="course-desc">Curso Operacional de ROTAM.</p>
         </div>
-        <div class="card-action" style="color: var(--text-muted);">Em desenvolvimento</div>
+        <div class="card-action disabled-action">Em desenvolvimento</div>
       </div>
 
       <!-- PATAMO -->
       <div class="course-card disabled">
         <div>
-          <span class="course-tag tag-soon">Em Breve</span>
-          <div class="course-title">PATAMO</div>
-          <p class="course-desc">Curso de Patrulhamento Tático Móvel (CPChoque). </p>
+          <div class="card-top">
+            <div class="card-icon">🛡️</div>
+            <span class="course-tag tag-soon">Em Breve</span>
+          </div>
+          <div class="course-title">PATAMO • BPChoque</div>
+          <p class="course-desc">Curso de Patrulhamento Tático Móvel.</p>
         </div>
-        <div class="card-action" style="color: var(--text-muted);">Em desenvolvimento</div>
+        <div class="card-action disabled-action">Em desenvolvimento</div>
       </div>
 
       <!-- BOPE -->
       <div class="course-card disabled">
         <div>
-          <span class="course-tag tag-soon">Em Breve</span>
-          <div class="course-title">BOPE (COEsp)</div>
-          <p class="course-desc">Curso de Operações Especiais. </p>
+          <div class="card-top">
+            <div class="card-icon">💀</div>
+            <span class="course-tag tag-soon">Em Breve</span>
+          </div>
+          <div class="course-title">BOPE • COEsp</div>
+          <p class="course-desc">Curso de Operações Especiais.</p>
         </div>
-        <div class="card-action" style="color: var(--text-muted);">Em desenvolvimento</div>
+        <div class="card-action disabled-action">Em desenvolvimento</div>
       </div>
     </div>
   </main>
 
   <footer>
-    Calculadora e conferência de enxoval • PMDF
+    <strong>PMDF</strong> • Sistema de Gestão e Comparação de Enxovais
   </footer>
 
-   <script>
+  <script>
     document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
+      e.preventDefault();
     });
 
     document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || e.keyCode === 123) {
-      e.preventDefault();
-      return false;
-    }
+      if (e.key === 'F12' || e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+      }
 
-    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
-      e.preventDefault();
-      return false;
-    }
+      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+        e.preventDefault();
+        return false;
+      }
 
-    if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
-      e.preventDefault();
-      return false;
-    }
+      if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
+        e.preventDefault();
+        return false;
+      }
       
-    if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
-      e.preventDefault();
-      return false;
-    }
-  });
+      if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+        e.preventDefault();
+        return false;
+      }
+    });
   </script>
-  
 </body>
 </html>
-
