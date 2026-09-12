@@ -3,306 +3,568 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Lojas Parceiras - Enxoval PMDF</title>
+  <title>Lojas Parceiras e Conveniadas • Enxoval PMDF</title>
   
-  <!-- PapaParse para ler a planilha -->
+  <!-- Fontes de Alta Precisão -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- PapaParse -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #151d30;
-      --border: #22304e;
+      --bg: #060911;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-hover: rgba(24, 35, 60, 0.9);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: #3b82f6;
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
+      --primary-glow: rgba(37, 99, 235, 0.35);
       --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.25);
+      --maps-blue: #bfdbfe;
+      --maps-blue-hover: #93c5fd;
+      --maps-text: #1e3a8a;
       --text: #f8fafc;
       --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --blur: blur(14px);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding-bottom: 60px; min-height: 100vh; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; 
+      -webkit-font-smoothing: antialiased; 
+    }
 
+    body { 
+      background: var(--bg); 
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text); 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Bar */
     header {
-      background: var(--card-bg);
+      background: rgba(10, 15, 29, 0.85);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
+      padding: 0.75rem 1.75rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 50;
     }
 
     .btn-voltar {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.88rem;
-      font-weight: 600;
+      font-size: 0.82rem;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
-      transition: 0.2s;
+      gap: 0.45rem;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-voltar:hover { color: var(--text); }
+    .btn-voltar:hover {
+      color: #fff;
+      background: rgba(51, 65, 85, 0.8);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
 
-    h1 { font-size: 1.15rem; font-weight: 700; color: #fff; }
-
-    main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-
-    .header-section {
-      margin-bottom: 1.75rem;
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: 0.5rem;
     }
 
-    .header-section h2 { font-size: 1.5rem; font-weight: 700; color: #fff; }
-    .header-section p { font-size: 0.9rem; color: var(--text-muted); }
+    main { 
+      max-width: 1200px; 
+      margin: 1.75rem auto; 
+      padding: 0 1.25rem; 
+      flex-grow: 1;
+      width: 100%;
+    }
 
+    .header-section {
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .header-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #60a5fa;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      width: fit-content;
+    }
+
+    .header-section h2 { 
+      font-size: 1.6rem; 
+      font-weight: 800; 
+      color: #fff; 
+    }
+    .header-section p { 
+      font-size: 0.88rem; 
+      color: var(--text-muted); 
+    }
+
+    /* Toolbar de Busca */
     .toolbar {
       margin-bottom: 1.5rem;
       background: var(--card-bg);
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-md);
       border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.75rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      pointer-events: none;
     }
 
     .toolbar input {
-      background: var(--bg);
+      background: rgba(6, 9, 17, 0.7);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 0.65rem 1rem;
-      border-radius: 6px;
+      padding: 0.55rem 1rem 0.55rem 2.4rem;
+      border-radius: var(--radius-sm);
       outline: none;
-      font-size: 0.9rem;
+      font-size: 0.84rem;
       width: 100%;
+      transition: border-color 0.2s;
     }
-    .toolbar input:focus { border-color: var(--primary); }
+    .toolbar input:focus { border-color: var(--border-focus); }
 
+    /* Grid de Lojas */
     .grid-lojas {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
       gap: 1.25rem;
     }
 
     .card-loja {
       background: var(--card-bg);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.25rem;
+      border-radius: var(--radius-md);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      transition: transform 0.2s, border-color 0.2s;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .card-loja:hover {
-      transform: translateY(-2px);
-      border-color: #3b82f6;
+      transform: translateY(-3px);
+      border-color: rgba(59, 130, 246, 0.4);
+      background: var(--card-hover);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Miniatura do Google Maps */
+    .map-preview-wrap {
+      width: 100%;
+      height: 155px;
+      position: relative;
+      background: #0b1329;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .map-preview-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      pointer-events: auto;
+      filter: contrast(1.05) saturate(1.1);
+    }
+
+    .map-floating-icon {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      pointer-events: none;
+    }
+
+    .card-content {
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      flex-grow: 1;
+    }
+
+    .loja-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .loja-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      flex-shrink: 0;
     }
 
     .loja-nome {
-      font-size: 1.1rem;
+      font-size: 0.98rem;
       font-weight: 700;
       color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .loja-dados {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.55rem;
       flex-grow: 1;
     }
 
+    /* Botão "Como chegar" idêntico ao widget do Maps */
+    .btn-como-chegar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      background: var(--maps-blue);
+      color: var(--maps-text);
+      padding: 0.55rem 1rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      width: fit-content;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .btn-como-chegar:hover {
+      background: var(--maps-blue-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Botões Auxiliares */
     .btn-action {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      padding: 0.65rem 1rem;
-      border-radius: 6px;
-      font-size: 0.88rem;
-      font-weight: 600;
+      padding: 0.55rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 700;
       text-decoration: none;
-      transition: 0.2s;
+      transition: all 0.2s ease;
       width: 100%;
     }
 
     .btn-whats {
       background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.4);
+      border: 1px solid rgba(16, 185, 129, 0.35);
       color: #34d399;
     }
     .btn-whats:hover {
       background: #10b981;
       color: #fff;
+      box-shadow: 0 4px 12px var(--accent-glow);
+      transform: translateY(-1px);
     }
 
     .btn-site {
       background: rgba(37, 99, 235, 0.12);
-      border: 1px solid rgba(37, 99, 235, 0.4);
+      border: 1px solid rgba(37, 99, 235, 0.35);
       color: #60a5fa;
     }
     .btn-site:hover {
       background: var(--primary);
       color: #fff;
+      box-shadow: 0 4px 12px var(--primary-glow);
+      transform: translateY(-1px);
     }
 
     .dado-vazio {
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      color: var(--text-dim);
+      font-size: 0.74rem;
       font-style: italic;
       text-align: center;
-      padding: 0.5rem 0;
+      padding: 0.35rem 0;
+      background: rgba(6, 9, 17, 0.3);
+      border-radius: var(--radius-sm);
+      border: 1px dashed rgba(255, 255, 255, 0.05);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      background: rgba(8, 12, 22, 0.95);
+      backdrop-filter: var(--blur);
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      header { padding: 0.65rem 1rem; }
+      main { margin: 1rem auto; padding: 0 0.85rem; }
+      .grid-lojas { grid-template-columns: 1fr; gap: 0.95rem; }
+      .map-preview-wrap { height: 140px; }
+      .btn-action { padding: 0.65rem 0.85rem; font-size: 0.82rem; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <a href="cfp.html" class="btn-voltar">← Voltar para o Enxoval</a>
-    <h1>LISTA DE LOJAS</h1>
-    <span style="width: 50px;"></span>
+    <a href="cfp.html" class="btn-voltar">← Voltar ao Enxoval</a>
+    <div class="brand-title">
+      <span>🏪</span> <span>Lojas Parceiras</span>
+    </div>
+    <span style="width: 30px;"></span>
   </header>
 
   <main>
     <div class="header-section">
-      <h2>Lojas</h2>
-      <p>Consulte diretamente as lojas para confirmar os preços dos itens do enxoval.</p>
+      <div class="header-tag">Diretório Homologado</div>
+      <h2>Fornecedores de Equipamentos</h2>
+      <p>Consulte diretamente a localização, trajeto, canais de WhatsApp e catálogo virtual das lojas cadastradas.</p>
     </div>
 
     <div class="toolbar">
-      <input type="text" id="buscaLoja" placeholder="Buscar por nome da loja..." oninput="filtrarLojas()">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="buscaLoja" placeholder="Buscar por nome da loja ou região..." oninput="filtrarLojas()">
     </div>
 
     <div class="grid-lojas" id="gridLojas">
-      <p style="color: var(--text-muted); grid-column: 1/-1;">Carregando lista de lojas...</p>
+      <p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 3rem;">Carregando diretório de lojas...</p>
     </div>
   </main>
 
- <script>
-    (function(_0x5a1b,_0x3e9f){const _0x2d4c=function(_0x1a8e){while(--_0x1a8e){_0x5a1b['push'](_0x5a1b['shift']());}};_0x2d4c(++_0x3e9f);}(['\x2e\x68\x74\x6d\x6c','\x65\x6e\x64\x73\x57\x69\x74\x68','\x70\x61\x74\x68\x6e\x61\x6d\x65','\x6c\x6f\x63\x61\x74\x69\x6f\x6e','\x74\x69\x74\x6c\x65','\x72\x65\x70\x6c\x61\x63\x65','\x72\x65\x70\x6c\x61\x63\x65\x53\x74\x61\x74\x65','\x68\x69\x73\x74\x6f\x72\x79','\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75','\x70\x72\x65\x76\x65\x6e\x74\x44\x65\x66\x61\x75\x6c\x74','\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72','\x6b\x65\x79\x64\x6f\x77\x6e','\x46\x31\x32','\x6b\x65\x79','\x6b\x65\x79\x43\x6f\x64\x65','\x63\x74\x72\x6c\x4b\x65\x79','\x73\x68\x69\x66\x74\x4b\x65\x79','\x69\x6e\x63\x6c\x75\x64\x65\x73','\x68\x74\x74\x70\x73\x3a\x2f\x2f\x64\x6f\x63\x73\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x73\x70\x72\x65\x61\x64\x73\x68\x65\x65\x74\x73\x2f\x64\x2f\x65\x2f\x32\x50\x41\x43\x58\x2d\x31\x76\x52\x71\x45\x59\x6b\x36\x78\x75\x39\x53\x45\x49\x6a\x52\x71\x44\x77\x50\x73\x68\x6a\x72\x73\x4b\x79\x76\x51\x75\x6d\x6f\x69\x68\x43\x6a\x49\x63\x4d\x34\x57\x4b\x61\x58\x51\x41\x73\x69\x41\x76\x70\x31\x57\x4f\x63\x59\x65\x32\x58\x49\x4f\x62\x49\x35\x6d\x32\x76\x7a\x36\x6b\x47\x43\x61\x6d\x57\x6b\x72\x6b\x73\x30\x2f\x70\x75\x62\x3f\x67\x69\x64\x3d\x32\x31\x34\x36\x39\x33\x31\x38\x37\x32\x26\x73\x69\x6e\x67\x6c\x65\x3d\x74\x72\x75\x65\x26\x6f\x75\x74\x70\x75\x74\x3d\x63\x73\x76','\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64','\x67\x72\x69\x64\x4c\x6f\x6a\x61\x73','\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c','\x62\x75\x73\x63\x61\x4c\x6f\x6a\x61','\x76\x61\x6c\x75\x65'],0x12));
+  <footer>
+    <strong>PMDF</strong> • Sistema de Gestão de Enxovais Operacionais
+  </footer>
 
-    const _0x4b2a=function(_0x39df,_0x18ac){const _0x53ef=['\x2e\x68\x74\x6d\x6c','\x65\x6e\x64\x73\x57\x69\x74\x68','\x70\x61\x74\x68\x6e\x61\x6d\x65','\x6c\x6f\x63\x61\x74\x69\x6f\x6e','\x74\x69\x74\x6c\x65','\x72\x65\x70\x6c\x61\x63\x65','\x72\x65\x70\x6c\x61\x63\x65\x53\x74\x61\x74\x65','\x68\x69\x73\x74\x6f\x72\x79','\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75','\x70\x72\x65\x76\x65\x6e\x74\x44\x65\x66\x61\x75\x6c\x74','\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72','\x6b\x65\x79\x64\x6f\x77\x6e','\x46\x31\x32','\x6b\x65\x79','\x6b\x65\x79\x43\x6f\x64\x65','\x63\x74\x72\x6c\x4b\x65\x79','\x73\x68\x69\x66\x74\x4b\x65\x79','\x69\x6e\x63\x6c\x75\x64\x65\x73','\x68\x74\x74\x70\x73\x3a\x2f\x2f\x64\x6f\x63\x73\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x73\x70\x72\x65\x61\x64\x73\x68\x65\x65\x74\x73\x2f\x64\x2f\x65\x2f\x32\x50\x41\x43\x58\x2d\x31\x76\x52\x71\x45\x59\x6b\x36\x78\x75\x39\x53\x45\x49\x6a\x52\x71\x44\x77\x50\x73\x68\x6a\x72\x73\x4b\x79\x76\x51\x75\x6d\x6f\x69\x68\x43\x6a\x49\x63\x4d\x34\x57\x4b\x61\x58\x51\x41\x73\x69\x41\x76\x70\x31\x57\x4f\x63\x59\x65\x32\x58\x49\x4f\x62\x49\x35\x6d\x32\x76\x7a\x36\x6b\x47\x43\x61\x6d\x57\x6b\x72\x6b\x73\x30\x2f\x70\x75\x62\x3f\x67\x69\x64\x3d\x32\x31\x34\x36\x39\x33\x31\x38\x37\x32\x26\x73\x69\x6e\x67\x6c\x65\x3d\x74\x72\x75\x65\x26\x6f\x75\x74\x70\x75\x74\x3d\x63\x73\x76','\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64','\x67\x72\x69\x64\x4c\x6f\x6a\x61\x73','\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c','\x62\x75\x73\x63\x61\x4c\x6f\x6a\x61','\x76\x61\x6c\x75\x65'];return _0x53ef[_0x39df];};
+  <script>
+    (function(){
+      var _0xd = {
+        'h': '\x2e\x68\x74\x6d\x6c',
+        'u': '\x68\x74\x74\x70\x73\x3a\x2f\x2f\x64\x6f\x63\x73\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x73\x70\x72\x65\x61\x64\x73\x68\x65\x65\x74\x73\x2f\x64\x2f\x65\x2f\x32\x50\x41\x43\x58\x2d\x31\x76\x52\x71\x45\x59\x6b\x36\x78\x75\x39\x53\x45\x49\x6a\x52\x71\x44\x77\x50\x73\x68\x6a\x72\x73\x4b\x79\x76\x51\x75\x6d\x6f\x69\x68\x43\x6a\x49\x63\x4d\x34\x57\x4b\x61\x58\x51\x41\x73\x69\x41\x76\x70\x31\x57\x4f\x63\x59\x65\x32\x58\x49\x4f\x62\x49\x35\x6d\x32\x76\x7a\x36\x6b\x47\x43\x61\x6d\x57\x6b\x72\x6b\x73\x30\x2f\x70\x75\x62\x3f\x67\x69\x64\x3d\x32\x31\x34\x36\x39\x33\x31\x38\x37\x32\x26\x73\x69\x6e\x67\x6c\x65\x3d\x74\x72\x75\x65\x26\x6f\x75\x74\x70\x75\x74\x3d\x63\x73\x76'
+      };
 
-    if(window[_0x4b2a(0x3)][_0x4b2a(0x2)][_0x4b2a(0x1)](_0x4b2a(0x0))){
-      window[_0x4b2a(0x7)][_0x4b2a(0x6)](null,document[_0x4b2a(0x4)],window[_0x4b2a(0x3)][_0x4b2a(0x2)][_0x4b2a(0x5)](/\/[^\/]+\.html$/,'/'));
-    }
-
-    document[_0x4b2a(0xa)](_0x4b2a(0x8),_0x2a1=>_0x2a1[_0x4b2a(0x9)]());
-    document[_0x4b2a(0xa)](_0x4b2a(0xb),_0x1b4=>{
-      if(_0x1b4[_0x4b2a(0xd)]===_0x4b2a(0xc)||_0x1b4[_0x4b2a(0xe)]===0x7b){_0x1b4[_0x4b2a(0x9)]();return false;}
-      if(_0x1b4[_0x4b2a(0xf)]&&_0x1b4[_0x4b2a(0x10)]&&['I','i','J','j','C','c'][_0x4b2a(0x11)](_0x1b4[_0x4b2a(0xd)])){_0x1b4[_0x4b2a(0x9)]();return false;}
-      if(_0x1b4[_0x4b2a(0xf)]&&['u','U','s','S'][_0x4b2a(0x11)](_0x1b4[_0x4b2a(0xd)])){_0x1b4[_0x4b2a(0x9)]();return false;}
-    });
-
-    const _0x_ul=_0x4b2a(0x12);
-    let _0x_ll=[];
-
-    async function init(){
-      try{
-        const _0x_res=await fetch(_0x_ul,{redirect:'follow'});
-        if(!_0x_res.ok)throw new Error('HTTP '+_0x_res.status);
-        const _0x_txt=await _0x_res.text();
-        Papa.parse(_0x_txt,{
-          header:true,
-          skipEmptyLines:'greedy',
-          transformHeader:_0xh=>_0xh.trim(),
-          complete:_0xr=>_0x_pd(_0xr.data),
-          error:_0xe=>{document[_0x4b2a(0x13)](_0x4b2a(0x14))[_0x4b2a(0x15)]='<p style="color:var(--text-muted);">Erro ao processar dados.</p>';}
-        });
-      }catch(_0xe){
-        document[_0x4b2a(0x13)](_0x4b2a(0x14))[_0x4b2a(0x15)]='<p style="color:var(--text-muted);">Erro ao carregar lojas.</p>';
+      if (window.location.pathname.endsWith(_0xd['h'])) {
+        window.history.replaceState(null, document.title, window.location.pathname.replace(/\/[^\/]+\.html$/, '/'));
       }
-    }
 
-    function _0x_gp(_0x_o,_0x_k){
-      if(!_0x_o)return '';
-      const _0x_cl=_0xs=>String(_0xs).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
-      const _0x_rk=Object.keys(_0x_o);
-      for(const _0x_p of _0x_k){
-        const _0x_lp=_0x_cl(_0x_p);
-        const _0x_f=_0x_rk.find(_0xk=>_0x_cl(_0xk)===_0x_lp);
-        if(_0x_f&&_0x_o[_0x_f]!==undefined&&_0x_o[_0x_f]!==null){return String(_0x_o[_0x_f]).trim();}
-      }
-      return '';
-    }
-
-    function _0x_pd(_0x_rows){
-      const _0x_m=new Map();
-      _0x_rows.forEach(_0x_l=>{
-        const _0x_n=_0x_gp(_0x_l,['Loja','Nome_Loja','Nome']);
-        const _0x_t=_0x_gp(_0x_l,['Telefone','WhatsApp','Contato','Tel']);
-        const _0x_s=_0x_gp(_0x_l,['Site','Link','URL']);
-        if(_0x_n&&!_0x_m.has(_0x_n.toLowerCase())){
-          _0x_m.set(_0x_n.toLowerCase(),{nome:_0x_n,tel:_0x_t,site:_0x_s});
-        }else if(_0x_n&&_0x_m.has(_0x_n.toLowerCase())){
-          const _0x_cur=_0x_m.get(_0x_n.toLowerCase());
-          if(!_0x_cur.tel&&_0x_t)_0x_cur.tel=_0x_t;
-          if(!_0x_cur.site&&_0x_s)_0x_cur.site=_0x_s;
-        }
+      document.addEventListener('contextmenu', function(_0xe){ _0xe.preventDefault(); });
+      document.addEventListener('keydown', function(_0xe){
+        if (_0xe.key === 'F12' || _0xe.keyCode === 123) { _0xe.preventDefault(); return false; }
+        if (_0xe.ctrlKey && _0xe.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(_0xe.key)) { _0xe.preventDefault(); return false; }
+        if (_0xe.ctrlKey && ['u', 'U', 's', 'S'].includes(_0xe.key)) { _0xe.preventDefault(); return false; }
       });
-      _0x_ll=Array.from(_0x_m.values()).sort((_0xa,_0xb)=>_0xa.nome.localeCompare(_0xb.nome));
-      renderizar(_0x_ll);
-    }
 
-    function _0x_fwl(_0x_tel){
-      const _0x_nums=_0x_tel.replace(/\D/g,'');
-      if(!_0x_nums)return '';
-      const _0x_ddi=_0x_nums.length<=11?'55'+_0x_nums:_0x_nums;
-      return `https://wa.me/${_0x_ddi}`;
-    }
+      var _0x_ll = [];
 
-    function _0x_fsl(_0x_site){
-      if(!_0x_site)return '';
-      if(!_0x_site.startsWith('http://')&&!_0x_site.startsWith('https://')){
-        return 'https://'+_0x_site;
+      async function init(){
+        try{
+          var _0x_res = await fetch(_0xd['u'], { redirect: 'follow' });
+          if(!_0x_res.ok) throw new Error('HTTP ' + _0x_res.status);
+          var _0x_txt = await _0x_res.text();
+          Papa.parse(_0x_txt, {
+            header: true,
+            skipEmptyLines: 'greedy',
+            transformHeader: function(_0xh){ return _0xh.trim(); },
+            complete: function(_0xr){ _0x_pd(_0xr.data); },
+            error: function(){
+              document.getElementById('gridLojas').innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;">Erro ao processar dados da tabela.</p>';
+            }
+          });
+        } catch(_0xe){
+          document.getElementById('gridLojas').innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;">Erro ao carregar lista de lojas.</p>';
+        }
       }
-      return _0x_site;
-    }
 
-    function renderizar(_0x_data){
-      const _0x_c=document[_0x4b2a(0x13)](_0x4b2a(0x14));
-      if(!_0x_data.length){
-        _0x_c[_0x4b2a(0x15)]='<p style="color:var(--text-muted);grid-column:1/-1;">Nenhuma loja encontrada com esse nome.</p>';
-        return;
+      function _0x_gp(_0xo, _0xk){
+        if (!_0xo) return '';
+        var _0xcl = function(_0xs){ return String(_0xs).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ''); };
+        var _0xrK = Object.keys(_0xo);
+        for (var _0xi = 0; _0xi < _0xk.length; _0xi++) {
+          var _0xkn = _0xcl(_0xk[_0xi]);
+          var _0xm = _0xrK.find(function(_0xrk){ return _0xcl(_0xrk) === _0xkn; });
+          if (_0xm && _0xo[_0xm] !== undefined && _0xo[_0xm] !== null) {
+            return String(_0xo[_0xm]).trim();
+          }
+        }
+        return '';
       }
-      _0x_c[_0x4b2a(0x15)]=_0x_data.map(_0x_lj=>{
-        const _0x_wu=_0x_fwl(_0x_lj.tel);
-        const _0x_su=_0x_fsl(_0x_lj.site);
-        return `
-          <div class="card-loja">
-            <div class="loja-nome">
-              <span>🏬</span> ${_0x_lj.nome}
-            </div>
-            <div class="loja-dados">
-              ${_0x_lj.tel?`
-                <a href="${_0x_wu}" target="_blank" rel="noopener noreferrer" class="btn-action btn-whats">
-                  <span>💬</span> WhatsApp: ${_0x_lj.tel}
-                </a>
-              `:'<div class="dado-vazio">Telefone não informado</div>'}
-              ${_0x_lj.site?`
-                <a href="${_0x_su}" target="_blank" rel="noopener noreferrer" class="btn-action btn-site">
-                  <span>🌐</span> Acessar Loja Online ↗
-                </a>
-              `:'<div class="dado-vazio">Site não informado</div>'}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
 
-    function filtrarLojas(){
-      const _0x_q=document[_0x4b2a(0x13)](_0x4b2a(0x16))[_0x4b2a(0x17)].toLowerCase();
-      const _0x_filtered=_0x_ll.filter(_0xl=>_0xl.nome.toLowerCase().includes(_0x_q));
-      renderizar(_0x_filtered);
-    }
+      function _0x_pd(_0x_rows){
+        var _0x_m = new Map();
+        _0x_rows.forEach(function(_0x_l){
+          var _0x_n = _0x_gp(_0x_l, ['Loja', 'Nome_Loja', 'Nome']);
+          var _0x_t = _0x_gp(_0x_l, ['Telefone', 'WhatsApp', 'Contato', 'Tel']);
+          var _0x_s = _0x_gp(_0x_l, ['Site', 'Link', 'URL']);
+          var _0x_loc = _0x_gp(_0x_l, ['Localizacao', 'Localização', 'Maps', 'Google_Maps', 'Endereco', 'Endereço']);
 
-    init();
+          if (_0x_n && !_0x_m.has(_0x_n.toLowerCase())){
+            _0x_m.set(_0x_n.toLowerCase(), { nome: _0x_n, tel: _0x_t, site: _0x_s, loc: _0x_loc });
+          } else if (_0x_n && _0x_m.has(_0x_n.toLowerCase())){
+            var _0x_cur = _0x_m.get(_0x_n.toLowerCase());
+            if (!_0x_cur.tel && _0x_t) _0x_cur.tel = _0x_t;
+            if (!_0x_cur.site && _0x_s) _0x_cur.site = _0x_s;
+            if (!_0x_cur.loc && _0x_loc) _0x_cur.loc = _0x_loc;
+          }
+        });
+        _0x_ll = Array.from(_0x_m.values()).sort(function(_0xa, _0xb){ return _0xa.nome.localeCompare(_0xb.nome); });
+        renderizar(_0x_ll);
+      }
+
+      function _0x_fwl(_0x_tel){
+        var _0x_nums = _0x_tel.replace(/\D/g, '');
+        if (!_0x_nums) return '';
+        var _0x_ddi = _0x_nums.length <= 11 ? '55' + _0x_nums : _0x_nums;
+        return 'https://wa.me/' + _0x_ddi;
+      }
+
+      function _0x_fsl(_0x_url){
+        if (!_0x_url) return '';
+        if (!_0x_url.startsWith('http://') && !_0x_url.startsWith('https://')){
+          return 'https://' + _0x_url;
+        }
+        return _0x_url;
+      }
+
+      // Constrói a URL do iframe oficial do Maps Embed a partir de termo ou link
+      function _0x_makeEmbedUrl(_0x_loc, _0x_nome){
+        var _0x_query = _0x_loc || (_0x_nome + ' Brasília DF');
+        
+        // Se já for uma URL do maps, extrai as coordenadas ou nome para busca
+        if (_0x_query.includes('google.com/maps') || _0x_query.includes('goo.gl')){
+          try {
+            var _0x_match = _0x_query.match(/place\/([^\/\?]+)/);
+            if (_0x_match && _0x_match[1]) {
+              _0x_query = decodeURIComponent(_0x_match[1].replace(/\+/g, ' '));
+            } else {
+              _0x_query = _0x_nome + ' Brasília DF';
+            }
+          } catch(_0x_e) {
+            _0x_query = _0x_nome + ' Brasília DF';
+          }
+        }
+        return 'https://maps.google.com/maps?q=' + encodeURIComponent(_0x_query) + '&t=&z=15&ie=UTF8&iwloc=&output=embed';
+      }
+
+      function renderizar(_0x_data){
+        var _0x_c = document.getElementById('gridLojas');
+        if (!_0x_data.length){
+          _0x_c.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem;">Nenhuma loja encontrada com esse nome.</p>';
+          return;
+        }
+
+        _0x_c.innerHTML = _0x_data.map(function(_0x_lj){
+          var _0x_wu = _0x_fwl(_0x_lj.tel);
+          var _0x_su = _0x_fsl(_0x_lj.site);
+          var _0x_lu = _0x_fsl(_0x_lj.loc) || ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(_0x_lj.nome + ' Brasília DF'));
+          var _0x_embed = _0x_makeEmbedUrl(_0x_lj.loc, _0x_lj.nome);
+
+          return '<div class="card-loja">' +
+            '<div class="map-preview-wrap">' +
+              '<iframe src="' + _0x_embed + '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="' + _0x_lj.nome + '"></iframe>' +
+              '<div class="map-floating-icon">🗺️</div>' +
+            '</div>' +
+            '<div class="card-content">' +
+              '<div class="loja-header">' +
+                '<div class="loja-icon">🏬</div>' +
+                '<div class="loja-nome" title="' + _0x_lj.nome + '">' + _0x_lj.nome + '</div>' +
+              '</div>' +
+              '<div>' +
+                '<a href="' + _0x_lu + '" target="_blank" rel="noopener noreferrer" class="btn-como-chegar">' +
+                  '<span>📍</span> Como chegar' +
+                '</a>' +
+              '</div>' +
+              '<div class="loja-dados">' +
+                (_0x_lj.tel ? 
+                  '<a href="' + _0x_wu + '" target="_blank" rel="noopener noreferrer" class="btn-action btn-whats">' +
+                    '<span>💬</span> WhatsApp: ' + _0x_lj.tel +
+                  '</a>' : '<div class="dado-vazio">Telefone não informado</div>') +
+                (_0x_lj.site ? 
+                  '<a href="' + _0x_su + '" target="_blank" rel="noopener noreferrer" class="btn-action btn-site">' +
+                    '<span>🌐</span> Acessar Loja Online ↗' +
+                  '</a>' : '<div class="dado-vazio">Site não informado</div>') +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      window.filtrarLojas = function(){
+        var _0x_q = document.getElementById('buscaLoja').value.toLowerCase();
+        var _0x_filtered = _0x_ll.filter(function(_0xl){ return _0xl.nome.toLowerCase().includes(_0x_q); });
+        renderizar(_0x_filtered);
+      };
+
+      init();
+    })();
   </script>
 </body>
 </html>
