@@ -25,6 +25,8 @@
       --primary-glow: rgba(37, 99, 235, 0.35);
       --accent: #10b981;
       --accent-glow: rgba(16, 185, 129, 0.25);
+      --insta-pink: #ec4899;
+      --insta-glow: rgba(236, 72, 153, 0.3);
       --maps-blue: #bfdbfe;
       --maps-blue-hover: #93c5fd;
       --maps-text: #1e3a8a;
@@ -282,7 +284,7 @@
       flex-grow: 1;
     }
 
-    /* Botão "Como chegar" idêntico ao widget do Maps */
+    /* Botão "Como chegar" */
     .btn-como-chegar {
       display: inline-flex;
       align-items: center;
@@ -328,6 +330,19 @@
       background: #10b981;
       color: #fff;
       box-shadow: 0 4px 12px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    /* Botão Instagram */
+    .btn-insta {
+      background: rgba(236, 72, 153, 0.12);
+      border: 1px solid rgba(236, 72, 153, 0.35);
+      color: #f472b6;
+    }
+    .btn-insta:hover {
+      background: var(--insta-pink);
+      color: #fff;
+      box-shadow: 0 4px 12px var(--insta-glow);
       transform: translateY(-1px);
     }
 
@@ -463,14 +478,16 @@
         _0x_rows.forEach(function(_0x_l){
           var _0x_n = _0x_gp(_0x_l, ['Loja', 'Nome_Loja', 'Nome']);
           var _0x_t = _0x_gp(_0x_l, ['Telefone', 'WhatsApp', 'Contato', 'Tel']);
+          var _0x_ig = _0x_gp(_0x_l, ['Instagram', 'Insta', 'IG', 'Rede_Social']);
           var _0x_s = _0x_gp(_0x_l, ['Site', 'Link', 'URL']);
           var _0x_loc = _0x_gp(_0x_l, ['Localizacao', 'Localização', 'Maps', 'Google_Maps', 'Endereco', 'Endereço']);
 
           if (_0x_n && !_0x_m.has(_0x_n.toLowerCase())){
-            _0x_m.set(_0x_n.toLowerCase(), { nome: _0x_n, tel: _0x_t, site: _0x_s, loc: _0x_loc });
+            _0x_m.set(_0x_n.toLowerCase(), { nome: _0x_n, tel: _0x_t, insta: _0x_ig, site: _0x_s, loc: _0x_loc });
           } else if (_0x_n && _0x_m.has(_0x_n.toLowerCase())){
             var _0x_cur = _0x_m.get(_0x_n.toLowerCase());
             if (!_0x_cur.tel && _0x_t) _0x_cur.tel = _0x_t;
+            if (!_0x_cur.insta && _0x_ig) _0x_cur.insta = _0x_ig;
             if (!_0x_cur.site && _0x_s) _0x_cur.site = _0x_s;
             if (!_0x_cur.loc && _0x_loc) _0x_cur.loc = _0x_loc;
           }
@@ -486,6 +503,16 @@
         return 'https://wa.me/' + _0x_ddi;
       }
 
+      function _0x_fil(_0x_ig){
+        if (!_0x_ig) return '';
+        var _0x_clean = _0x_ig.trim();
+        if (_0x_clean.startsWith('http://') || _0x_clean.startsWith('https://')){
+          return _0x_clean;
+        }
+        _0x_clean = _0x_clean.replace(/^@/, '');
+        return 'https://instagram.com/' + _0x_clean;
+      }
+
       function _0x_fsl(_0x_url){
         if (!_0x_url) return '';
         if (!_0x_url.startsWith('http://') && !_0x_url.startsWith('https://')){
@@ -494,11 +521,9 @@
         return _0x_url;
       }
 
-      // Constrói a URL do iframe oficial do Maps Embed a partir de termo ou link
       function _0x_makeEmbedUrl(_0x_loc, _0x_nome){
         var _0x_query = _0x_loc || (_0x_nome + ' Brasília DF');
         
-        // Se já for uma URL do maps, extrai as coordenadas ou nome para busca
         if (_0x_query.includes('google.com/maps') || _0x_query.includes('goo.gl')){
           try {
             var _0x_match = _0x_query.match(/place\/([^\/\?]+)/);
@@ -523,6 +548,7 @@
 
         _0x_c.innerHTML = _0x_data.map(function(_0x_lj){
           var _0x_wu = _0x_fwl(_0x_lj.tel);
+          var _0x_iu = _0x_fil(_0x_lj.insta);
           var _0x_su = _0x_fsl(_0x_lj.site);
           var _0x_lu = _0x_fsl(_0x_lj.loc) || ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(_0x_lj.nome + ' Brasília DF'));
           var _0x_embed = _0x_makeEmbedUrl(_0x_lj.loc, _0x_lj.nome);
@@ -547,6 +573,10 @@
                   '<a href="' + _0x_wu + '" target="_blank" rel="noopener noreferrer" class="btn-action btn-whats">' +
                     '<span>💬</span> WhatsApp: ' + _0x_lj.tel +
                   '</a>' : '<div class="dado-vazio">Telefone não informado</div>') +
+                (_0x_lj.insta ? 
+                  '<a href="' + _0x_iu + '" target="_blank" rel="noopener noreferrer" class="btn-action btn-insta">' +
+                    '<span>📸</span> Instagram' +
+                  '</a>' : '<div class="dado-vazio">Instagram não informado</div>') +
                 (_0x_lj.site ? 
                   '<a href="' + _0x_su + '" target="_blank" rel="noopener noreferrer" class="btn-action btn-site">' +
                     '<span>🌐</span> Acessar Loja Online ↗' +
