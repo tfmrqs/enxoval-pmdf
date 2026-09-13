@@ -478,7 +478,14 @@
         _0x_rows.forEach(function(_0x_l){
           var _0x_n = _0x_gp(_0x_l, ['Loja', 'Nome_Loja', 'Nome']);
           var _0x_t = _0x_gp(_0x_l, ['Telefone', 'WhatsApp', 'Contato', 'Tel']);
-          var _0x_ig = _0x_gp(_0x_l, ['Instagram', 'Insta', 'IG', 'Rede_Social']);
+          var _0x_ig = _0x_gp(_0x_l, ['Instagram', 'Insta', 'IG', 'Rede_Social', 'Perfil', 'Rede Social', 'Link_Instagram', 'Instagram_Loja']) || 
+             (function(row){
+               var key = Object.keys(row).find(function(k){
+                 var n = k.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                 return n.includes('insta') || n === 'ig';
+               });
+               return key ? String(row[key]).trim() : '';
+             })(_0x_l);
           var _0x_s = _0x_gp(_0x_l, ['Site', 'Link', 'URL']);
           var _0x_loc = _0x_gp(_0x_l, ['Localizacao', 'Localização', 'Maps', 'Google_Maps', 'Endereco', 'Endereço']);
 
