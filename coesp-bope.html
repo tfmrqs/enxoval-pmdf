@@ -796,13 +796,14 @@
     <div class="grid-itens" id="gridItens"></div>
   </main>
 
-  <!-- GAVETA LATERAL RETRÁTIL -->
+ <!-- GAVETA LATERAL RETRÁTIL -->
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
   <aside class="sidebar-drawer" id="sidebarDrawer">
     <div class="sidebar-header">
       <h2>📋 Itens Selecionados (<span id="sidebarCount">0</span>)</h2>
       <div style="display: flex; gap: 0.5rem; align-items: center;">
-       <button class="btn-close-sidebar" title="Limpar carrinho" onclick="if(confirm('Deseja limpar todo o carrinho?')){localStorage.removeItem('enxoval_pmdf_gtop_state');window.location.href='coesp-bope.html';}">🗑️</button>
+        <button class="btn-close-sidebar" title="Limpar carrinho" onclick="if(confirm('Deseja limpar todo o carrinho?')){localStorage.removeItem('enxoval_pmdf_coesp_state');window.location.href='bope-coesp.html';}">🗑️</button>
+        <button class="btn-close-sidebar" onclick="toggleSidebar(false)">✕</button>
       </div>
     </div>
 
