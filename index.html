@@ -101,7 +101,7 @@
     h1 { 
       font-size: 2.35rem; 
       font-weight: 800; 
-      letter-spacing: -0.03em;
+      letter-spacing: -0.03em; 
       line-height: 1.15;
       margin-bottom: 0.75rem; 
       background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
@@ -219,6 +219,14 @@
       justify-content: center;
       font-size: 1.25rem;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      padding: 6px;
+    }
+
+    .card-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
     .course-tag {
@@ -246,7 +254,7 @@
     .course-title { 
       font-size: 1.15rem; 
       font-weight: 700; 
-      line-height: 1.3;
+      line-height: 1.3; 
       margin-bottom: 0.45rem; 
       color: #fff;
     }
@@ -350,69 +358,74 @@
       <div class="section-title">Cursos Operacionais</div>
     </div>
     <div class="courses-grid">
-      <!-- CTOP -->
-      <div class="course-card disabled">
+      <!-- CTOP ATIVO -->
+      <a href="gtop-ctop.html" class="course-card">
         <div>
           <div class="card-top">
             <div class="card-icon">🦅</div>
-            <span class="course-tag tag-soon">Em Breve</span>
+            <span class="course-tag tag-active">● Disponível</span>
           </div>
-          <div class="course-title">CTOP • Tático Operacional</div>
+          <div class="course-title">GTOP • CTOP</div>
           <p class="course-desc">Curso Tático Operacional.</p>
         </div>
-        <div class="card-action disabled-action">Em desenvolvimento</div>
-      </div>
+        <div class="card-action">Acessar e Montar Orçamento ↗</div>
+      </a>
 
-      <!-- ROTAM -->
-      <div class="course-card disabled">
+      <!-- ROTAM ATIVO -->
+      <a href="rotam-cor.html" class="course-card">
         <div>
           <div class="card-top">
             <div class="card-icon">⚡</div>
-            <span class="course-tag tag-soon">Em Breve</span>
+            <span class="course-tag tag-active">● Disponível</span>
           </div>
           <div class="course-title">ROTAM • COR</div>
           <p class="course-desc">Curso Operacional de ROTAM.</p>
         </div>
-        <div class="card-action disabled-action">Em desenvolvimento</div>
-      </div>
+        <div class="card-action">Acessar e Montar Orçamento ↗</div>
+      </a>
 
-      <!-- PATAMO -->
-      <div class="course-card disabled">
+      <!-- PATAMO ATIVO -->
+      <a href="patamo-cptm.html" class="course-card">
         <div>
           <div class="card-top">
-            <div class="card-icon">🛡️</div>
-            <span class="course-tag tag-soon">Em Breve</span>
+            <div class="card-icon">
+              <img src="Patamo_ic6464.png" alt="PATAMO">
+            </div>
+            <span class="course-tag tag-active">● Disponível</span>
           </div>
-          <div class="course-title">PATAMO • BPChoque</div>
+          <div class="course-title">PATAMO • CPTM</div>
           <p class="course-desc">Curso de Patrulhamento Tático Móvel.</p>
         </div>
-        <div class="card-action disabled-action">Em desenvolvimento</div>
-      </div>
+        <div class="card-action">Acessar e Montar Orçamento ↗</div>
+      </a>
 
-      <!-- BOPE -->
-      <div class="course-card disabled">
+      <!-- BOPE ATIVO -->
+      <a href="coesp-bope.html" class="course-card">
         <div>
           <div class="card-top">
             <div class="card-icon">💀</div>
-            <span class="course-tag tag-soon">Em Breve</span>
+            <span class="course-tag tag-active">● Disponível</span>
           </div>
-          <div class="course-title">BOPE • COEsp</div>
+          <div class="course-title">BOPE • COESP</div>
           <p class="course-desc">Curso de Operações Especiais.</p>
         </div>
-        <div class="card-action disabled-action">Em desenvolvimento</div>
-      </div>
+        <div class="card-action">Acessar e Montar Orçamento ↗</div>
+      </a>
     </div>
   </main>
 
   <footer>
-    <strong>PMDF</strong> • Sistema de Gestão e Comparação de Enxovais
+    <p><strong>PMDF</strong> • Sistema de Gestão de Enxovais</p>
+    <p style="margin-top: 0.5rem; font-size: 0.72rem; color: var(--text-dim); line-height: 1.5; max-width: 720px; margin-left: auto; margin-right: auto;">
+      <strong>Aviso Legal:</strong> Este site é uma ferramenta independente de auxílio e consulta para alunos e policiais. A plataforma <strong>não é mantida, administrada e não possui qualquer vínculo institucional direto com a Polícia Militar do Distrito Federal (PMDF)</strong>.
+    </p>
   </footer>
 
   <script>
     (function () {
-      //Barra de navegação limpa
-      if (window.location.pathname.endsWith('index.html')) {
-        window.history.replaceState(null, document.title, window.location.pathname.replace(/index\.html$/, ''));
+      // Remove 'home.html' ou 'index.html' da barra de navegação mantendo a URL limpa na raiz
+      if (window.location.pathname.endsWith('home.html') || window.location.pathname.endsWith('index.html')) {
+        window.history.replaceState(null, document.title, window.location.pathname.replace(/(home|index)\.html$/, ''));
       } else if (window.location.pathname.endsWith('.html')) {
         window.history.replaceState(null, document.title, window.location.pathname.replace(/\/[^\/]+\.html$/, '/'));
       }
